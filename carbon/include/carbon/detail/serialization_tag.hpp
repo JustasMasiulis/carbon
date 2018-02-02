@@ -23,6 +23,7 @@ namespace carbon { namespace detail {
     struct fundamental_tag {};
     struct iterable_tag {};
     struct tuple_tag {};
+    struct array_tag {};
 
     // I know it's ugly, okay
     template<class T>

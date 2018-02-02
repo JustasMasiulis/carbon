@@ -19,9 +19,6 @@
 #include "carbon/detail/nargs_macro.hpp"
 #include "carbon/serializer.hpp"
 #include "carbon/proxies.hpp"
-#include <type_traits>
-#include <iterator>
-#include <ostream>
 
 // needed to fix msvc va args expansion
 #define CRBN_DETAIL_EXPAND(...) __VA_ARGS__
