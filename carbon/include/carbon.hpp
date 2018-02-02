@@ -29,6 +29,6 @@
 #define CARBON_SERIALIZABLE_(...) \
     CRBN_DETAIL_CAT(CRBN_DETAIL_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
 
-#define CARBON_SERIALIZABLE(class_name, ...) \
-    using serializer_type =                  \
-        CRBN_DETAIL_EXPAND(CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
+#define CARBON_SERIALIZABLE(class_name, ...)    \
+    using serializer_type = CRBN_DETAIL_EXPAND( \
+        CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))

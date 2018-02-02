@@ -20,7 +20,7 @@ struct foo {
 int main()
 {
     std::vector<std::uint8_t> buffer(2048);
-    foo f;
+    foo                       f;
     f.i = 2;
     f.t = std::make_tuple(2, 3.f);
     f.b = { { { 1, 2, 3 }, 4 }, { { 4, 5, 6, 7 }, 5 }, { { 8, 9 }, 10 } };
@@ -30,7 +30,6 @@ int main()
     foo b;
 
     carbon::deserialize(b, buffer.data());
-
 
 
     std::ifstream in("test.txt", std::ios::binary);
