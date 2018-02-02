@@ -1,8 +1,23 @@
 #pragma once
 #include <functional>
-#include "meta.hpp"
+#include "serialization_tag.hpp"
 
 namespace carbon { namespace detail {
+
+    template<class T, class Proxy>
+    void copy_size(T& value, Proxy p, std::true_type)
+    {
+        typename T::size_type size;
+        copy_one(size, p);
+        value.resize(size);
+    }
+
+    template<class T, class Proxy>
+    void copy_size(T& value, Proxy p, std::false_type)
+    {
+        const auto size = value.size();
+        copy_one(size, p);
+    }
 
     template<class Proxy, class T, class... Args>
     void copy_variadic(Proxy p, T& value, Args&... args)
@@ -23,39 +38,44 @@ namespace carbon { namespace detail {
         copy_variadic(p, std::get<Is>(t)...);
     }
 
+
+    template<class T, class Proxy>
+    void copy_one(T& value, Proxy p, specialized_tag)
+    {
+        T::serializer_type::serialize(value, p);
+    }
+
+    template<class T, class Proxy>
+    void copy_one(T& value, Proxy p, fundamental_tag)
+    {
+        p.copy(value, sizeof(T));
+    }
+
     template<class Proxy, class T>
+    void copy_one(T& value, Proxy p, iterable_tag)
+    {
+        using std::begin;
+        using std::end;
+
+        copy_size(value, p, is_input_proxy<Proxy>());
+
+        auto first = begin(value);
+        auto last  = end(value);
+
+        for (; first != last; ++first)
+            copy_one(*first, p);
+    }
+
+    template<class Proxy, class T>
+    void copy_one(T& value, Proxy p, tuple_tag)
+    {
+        copy_tuple(p, value, std::make_index_sequence<std::tuple_size<T>::value>());
+    }
+
+    template<class T, class Proxy>
     void copy_one(T& value, Proxy p)
     {
-        using decayed = std::decay_t<T>;
-        if constexpr (detail::is_serializer_specialized<decayed>::value)
-            decayed::serializer_type::serialize(value, p);
-        else if constexpr (std::is_fundamental<decayed>::value)
-            p.copy(value, sizeof(T));
-        else if constexpr (detail::is_iterable<decayed>::value) {
-            using std::begin;
-            using std::end;
-
-            if constexpr (is_input_proxy<Proxy>::value) {
-                typename T::size_type size;
-                copy_one(size, p);
-
-                value.resize(size);
-            }
-            else {
-                auto size = value.size();
-                copy_one(size, p);
-            }
-
-            auto first = begin(value);
-            auto last  = end(value);
-
-            for (; first != last; ++first)
-                copy_one(*first, p);
-        }
-        else if constexpr (is_tuple_like<decayed>::value)
-            copy_tuple(p, value, std::make_index_sequence<std::tuple_size<decayed>::value>());
-        else
-            static_assert(false);
+        copy_one(value, p, serialization_tag<T>());
     }
 
 }} // namespace carbon::detail

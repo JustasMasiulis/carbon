@@ -4,8 +4,7 @@
 namespace carbon {
 
     template<class... Ms>
-    class serializer {
-    public:
+    struct serializer {
         template<class T, class Proxy>
         static void serialize(T& this_, Proxy proxy)
         {

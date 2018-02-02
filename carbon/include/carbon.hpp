@@ -32,13 +32,3 @@
 #define CARBON_SERIALIZABLE(class_name, ...) \
     using serializer_type =                  \
         CRBN_DETAIL_EXPAND(CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
-
-namespace carbon { namespace detail {
-
-
-    template<class T, class Proxy>
-    void copy_range(T&& value, Proxy proxy)
-    {}
-
-
-}} // namespace carbon::detail

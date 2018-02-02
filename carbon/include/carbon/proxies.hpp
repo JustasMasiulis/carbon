@@ -1,6 +1,3 @@
 #pragma once
 #include "detail/stream_proxies.hpp"
-
-namespace carbon {
-
-}
+#include "detail/memory_proxies.hpp"
