@@ -19,7 +19,7 @@
 
 namespace carbon { namespace detail {
 
-    template<class T, class Proxy>
+    template<class Proxy, class T>
     void copy_size(T& value, Proxy p, std::true_type)
     {
         typename T::size_type size;
@@ -27,26 +27,25 @@ namespace carbon { namespace detail {
         value.resize(size);
     }
 
-    template<class T, class Proxy>
+    template<class Proxy, class T>
     void copy_size(T& value, Proxy p, std::false_type)
     {
         const auto size = value.size();
         copy_one(size, p);
     }
 
-    template<class T, std::size_t N, class Proxy>
-    void copy_array(T (&arr)[N], Proxy p, std::true_type /* fundamental */)
+    template<class Proxy, class T, std::size_t N>
+    void copy_array(T* arr, Proxy p, std::true_type /* fundamental */)
     {
-        p.copy(arr, sizeof(T) * N);
+        p.copy(*arr, sizeof(T) * N);
     }
 
-    template<class T, std::size_t N, class Proxy>
-    void copy_array(T (&arr)[N], Proxy p, std::false_type /* not fundamental */)
+    template<class Proxy, class T, std::size_t N>
+    void copy_array(T* arr, Proxy p, std::false_type /* not fundamental */)
     {
-        auto* first = arr;
-        auto  end   = arr + N;
-        for (; first != end; ++first)
-            copy_one(*first, p);
+        auto end = arr + N;
+        for (; arr != end; ++arr)
+            copy_one(*arr, p);
     }
 
     template<class Proxy, class T, class... Args>
@@ -69,13 +68,13 @@ namespace carbon { namespace detail {
     }
 
 
-    template<class T, class Proxy>
+    template<class Proxy, class T>
     void copy_one(T& value, Proxy p, specialized_tag)
     {
         T::serializer_type::serialize(value, p);
     }
 
-    template<class T, class Proxy>
+    template<class Proxy, class T>
     void copy_one(T& value, Proxy p, fundamental_tag)
     {
         p.copy(value, sizeof(T));
@@ -96,19 +95,25 @@ namespace carbon { namespace detail {
             copy_one(*first, p);
     }
 
-    template<class T, class Proxy>
+    template<class Proxy, class T>
     void copy_one(T& value, Proxy p, tuple_tag)
     {
         copy_tuple(p, value, std::make_index_sequence<std::tuple_size<T>::value>());
     }
 
-    template<class T, std::size_t N, class Proxy>
+    template<class Proxy, class T, std::size_t N>
     void copy_one(T (&arr)[N], Proxy p)
     {
-        copy_array(arr, p, std::is_fundamental<T>());
+        copy_array<Proxy, T, N>(arr, p, std::is_fundamental<T>());
     }
 
-    template<class T, class Proxy>
+    template<class Proxy, class T, std::size_t N>
+    void copy_one(std::array<T, N>& arr, Proxy p)
+    {
+        copy_array<Proxy, T, N>(arr.data(), p, std::is_fundamental<T>());
+    }
+
+    template<class Proxy, class T>
     void copy_one(T& value, Proxy p)
     {
         copy_one(value, p, serialization_tag<T>());

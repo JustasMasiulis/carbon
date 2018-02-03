@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <tuple>
+#include <array>
 
 struct baz {
     std::vector<int> v;
@@ -14,7 +15,7 @@ struct foo {
     int                    i;
     std::tuple<int, float> t;
     std::list<baz>         b;
-    int                    a[5];
+    std::array<int, 5>     a;
     CARBON_SERIALIZABLE(foo, i, t, b, a);
 };
 
