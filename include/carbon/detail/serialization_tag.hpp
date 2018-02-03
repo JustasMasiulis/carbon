@@ -31,7 +31,7 @@ namespace carbon { namespace detail {
         is_serializer_specialized<T>::value,
         specialized_tag,
         std::conditional_t<
-            std::is_fundamental<T>::value,
+            std::is_trivially_copyable<T>::value,
             trivially_copyable_tag,
             std::conditional_t<
                 is_iterable<T>::value,

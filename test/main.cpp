@@ -11,12 +11,19 @@ struct baz {
     CARBON_SERIALIZABLE(baz, v, s);
 };
 
+struct triv_copyable {
+    int    i;
+    float  f;
+    double d;
+};
+
 struct foo {
+    triv_copyable          tc;
     int                    i;
     std::tuple<int, float> t;
     std::list<baz>         b;
     std::array<int, 5>     a;
-    CARBON_SERIALIZABLE(foo, i, t, b, a);
+    CARBON_SERIALIZABLE(foo, tc, i, t, b, a);
 };
 
 int main()

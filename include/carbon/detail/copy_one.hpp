@@ -104,7 +104,7 @@ namespace carbon { namespace detail {
     template<class Proxy, class T, std::size_t N>
     void copy_one(T (&arr)[N], Proxy p)
     {
-        copy_array<Proxy, T, N>(arr, p, std::is_fundamental<T>());
+        copy_array<Proxy, T, N>(arr, p, is_raw_serializable<T>());
     }
 
     template<class Proxy, class T, std::size_t N>
