@@ -20,7 +20,7 @@
 namespace carbon { namespace detail {
 
     template<class Proxy, class T>
-    void copy_size(T& value, Proxy p, std::true_type)
+    void copy_size(T& value, Proxy p, std::true_type /* input proxy */)
     {
         typename T::size_type size;
         copy_one(size, p);
@@ -28,20 +28,20 @@ namespace carbon { namespace detail {
     }
 
     template<class Proxy, class T>
-    void copy_size(T& value, Proxy p, std::false_type)
+    void copy_size(T& value, Proxy p, std::false_type /* output proxy */)
     {
         const auto size = value.size();
         copy_one(size, p);
     }
 
     template<class Proxy, class T, std::size_t N>
-    void copy_array(T* arr, Proxy p, std::true_type /* fundamental */)
+    void copy_array(T* arr, Proxy p, std::true_type /* raw serializable */)
     {
         p.copy(*arr, sizeof(T) * N);
     }
 
     template<class Proxy, class T, std::size_t N>
-    void copy_array(T* arr, Proxy p, std::false_type /* not fundamental */)
+    void copy_array(T* arr, Proxy p, std::false_type /* not raw serializable */)
     {
         auto end = arr + N;
         for (; arr != end; ++arr)
@@ -75,7 +75,7 @@ namespace carbon { namespace detail {
     }
 
     template<class Proxy, class T>
-    void copy_one(T& value, Proxy p, fundamental_tag)
+    void copy_one(T& value, Proxy p, trivially_copyable_tag)
     {
         p.copy(value, sizeof(T));
     }
@@ -110,7 +110,7 @@ namespace carbon { namespace detail {
     template<class Proxy, class T, std::size_t N>
     void copy_one(std::array<T, N>& arr, Proxy p)
     {
-        copy_array<Proxy, T, N>(arr.data(), p, std::is_fundamental<T>());
+        copy_array<Proxy, T, N>(arr.data(), p, is_raw_serializable<T>());
     }
 
     template<class Proxy, class T>
