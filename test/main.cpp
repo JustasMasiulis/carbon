@@ -33,7 +33,7 @@ int main()
      foo b;
 
      carbon::deserialize(b, buffer.data());
-     */
+    */
 
     std::ifstream in("test.txt", std::ios::binary);
     if (in.is_open()) {
