@@ -79,6 +79,7 @@
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessorDefinitions>__STDC_NO_COMPLEX__;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -88,6 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -99,6 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -114,6 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -127,6 +131,7 @@
     <ClInclude Include="include\carbon\detail\memory_proxies.hpp" />
     <ClInclude Include="include\carbon\detail\meta.hpp" />
     <ClInclude Include="include\carbon\detail\nargs_macro.hpp" />
+    <ClInclude Include="include\carbon\detail\proxy_tags.hpp" />
     <ClInclude Include="include\carbon\detail\serialization_tag.hpp" />
     <ClInclude Include="include\carbon\detail\stream_proxies.hpp" />
     <ClInclude Include="include\carbon\members.hpp" />

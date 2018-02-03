@@ -51,12 +51,19 @@ namespace carbon {
 
     } // namespace detail
 
-    template<class T, detail::member_value_t<T> detail::member_class_t<T>::*P>
+    template<class T, T P>
     struct m_ {
         using value_type = detail::member_value_t<T>;
         using class_type = detail::member_class_t<T>;
 
         constexpr static value_type class_type::*pointer = P;
+    };
+
+    //template<class R, class T>
+
+    template<const char* Name, class T, T P>
+    struct named_ {
+
     };
 
 } // namespace carbon

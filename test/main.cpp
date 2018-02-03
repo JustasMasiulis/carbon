@@ -21,9 +21,9 @@ struct foo {
     triv_copyable          tc;
     int                    i;
     std::tuple<int, float> t;
-    std::list<baz>         b;
+    //std::list<baz>         b;
     std::array<int, 5>     a;
-    CARBON_SERIALIZABLE(foo, tc, i, t, b, a);
+    CARBON_SERIALIZABLE(foo, tc, i, a);
 };
 
 int main()
@@ -42,11 +42,17 @@ int main()
      carbon::deserialize(b, buffer.data());
     */
 
+    std::vector<int> v;
+
     std::ifstream in("test.txt", std::ios::binary);
-    if (in.is_open()) {
+
+    /*if (in.is_open()) {
         carbon::deserialize(f, in);
         in.close();
-    }
+    }*/
     std::ofstream out("test.txt", std::ios::binary);
-    carbon::serialize(f, out);
+    //carbon::serialize(f, out);
+
+    carbon::serialize(v, out);
+
 }

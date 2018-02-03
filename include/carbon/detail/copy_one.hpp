@@ -16,6 +16,7 @@
 
 #pragma once
 #include "serialization_tag.hpp"
+#include "proxy_tags.hpp"
 
 namespace carbon { namespace detail {
 
@@ -30,7 +31,7 @@ namespace carbon { namespace detail {
     template<class Proxy, class T>
     void copy_size(T& value, Proxy p, std::false_type /* output proxy */)
     {
-        const auto size = value.size();
+        auto size = value.size();
         copy_one(size, p);
     }
 
@@ -86,13 +87,13 @@ namespace carbon { namespace detail {
         using std::begin;
         using std::end;
 
-        copy_size(value, p, is_input_proxy<Proxy>());
+        copy_size(value, p, proxy::is_input<Proxy>());
 
         auto first = begin(value);
         auto last  = end(value);
 
         for (; first != last; ++first)
-            copy_one(*first, p);
+            copy_one(*first, p, serialization_tag<std::decay_t<decltype(*first)>>());
     }
 
     template<class Proxy, class T>

@@ -20,12 +20,12 @@
 
 namespace carbon {
 
-    namespace detail {
+    namespace proxy {
 
         struct imemory_proxy {
             std::uint8_t* ptr;
             std::uint8_t* end;
-            using proxy_tag = input_proxy_tag;
+            using proxy_category = proxy::input_proxy_tag;
 
             template<class T>
             void copy(T& data, std::size_t size) noexcept
@@ -42,7 +42,7 @@ namespace carbon {
         struct omemory_proxy {
             std::uint8_t* ptr;
             std::uint8_t* end;
-            using proxy_tag = output_proxy_tag;
+            using proxy_category = proxy::output_proxy_tag;
 
             template<class T>
             void copy(const T& data, std::size_t size) noexcept
@@ -58,7 +58,7 @@ namespace carbon {
 
         struct unsafe_imemory_proxy {
             const std::uint8_t*& ptr;
-            using proxy_tag = input_proxy_tag;
+            using proxy_category = proxy::input_proxy_tag;
 
             template<class T>
             void copy(T& data, std::size_t size) noexcept
@@ -70,7 +70,7 @@ namespace carbon {
 
         struct unsafe_omemory_proxy {
             std::uint8_t*& ptr;
-            using proxy_tag = output_proxy_tag;
+            using proxy_category = proxy::output_proxy_tag;
 
             template<class T>
             void copy(const T& data, std::size_t size) noexcept
@@ -86,7 +86,7 @@ namespace carbon {
     std::ptrdiff_t serialize(T& value, std::uint8_t* buffer)
     {
         auto temp = buffer;
-        detail::unsafe_omemory_proxy proxy{ buffer };
+        proxy::unsafe_omemory_proxy proxy{ buffer };
         detail::copy_one(value, proxy);
         return buffer - temp;
     }
@@ -94,7 +94,7 @@ namespace carbon {
     template<class T>
     void deserialize(T& value, const std::uint8_t* buffer)
     {
-        detail::unsafe_imemory_proxy proxy{ buffer };
+        proxy::unsafe_imemory_proxy proxy{ buffer };
         detail::copy_one(value, proxy);
     }
 

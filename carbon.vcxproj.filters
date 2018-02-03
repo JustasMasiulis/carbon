@@ -48,6 +48,9 @@
     <ClInclude Include="include\carbon\detail\serialization_tag.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\carbon\detail\proxy_tags.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test\main.cpp">

@@ -25,8 +25,8 @@ namespace carbon { namespace detail {
 
     template<typename T>
     struct is_iterable<T,
-                       std::void_t<decltype(std::declval<T>().begin()),
-                                   decltype(std::declval<T>().end())>>
+                       std::void_t<decltype(begin(std::declval<T>())),
+                                   decltype(begin(std::declval<T>()))>>
         : std::true_type {};
 
     template<typename T, typename = void>
@@ -42,16 +42,6 @@ namespace carbon { namespace detail {
     template<typename T>
     struct is_tuple_like<T, std::void_t<decltype(std::tuple_size<T>::value)>>
         : std::true_type {};
-
-    struct input_proxy_tag {};
-    struct output_proxy_tag {};
-
-    template<class P>
-    struct is_input_proxy : std::is_same<typename P::proxy_tag, input_proxy_tag> {};
-
-    template<class P>
-    struct is_output_proxy : std::is_same<typename P::proxy_tag, output_proxy_tag> {
-    };
 
     template<class T>
     struct is_raw_serializable
