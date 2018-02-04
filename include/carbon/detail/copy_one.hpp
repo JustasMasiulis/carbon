@@ -20,104 +20,90 @@
 
 namespace carbon { namespace detail {
 
-    template<class Proxy, class T>
-    void copy_size(T& value, Proxy p, std::true_type /* input proxy */)
+    template<class Archive, class T>
+    void copy_size(T& value, Archive& a, std::true_type /* input Archive */)
     {
         typename T::size_type size;
-        copy_one(size, p);
+        copy_one(size, a);
         value.resize(size);
     }
 
-    template<class Proxy, class T>
-    void copy_size(T& value, Proxy p, std::false_type /* output proxy */)
+    template<class Archive, class T>
+    void copy_size(T& value, Archive& a, std::false_type /* output Archive */)
     {
         auto size = value.size();
-        copy_one(size, p);
+        copy_one(size, a);
     }
 
-    template<class Proxy, class T, std::size_t N>
-    void copy_array(T* arr, Proxy p, std::true_type /* raw serializable */)
-    {
-        p.copy(*arr, sizeof(T) * N);
-    }
-
-    template<class Proxy, class T, std::size_t N>
-    void copy_array(T* arr, Proxy p, std::false_type /* not raw serializable */)
-    {
-        auto end = arr + N;
-        for (; arr != end; ++arr)
-            copy_one(*arr, p);
-    }
-
-    template<class Proxy, class T, class... Args>
-    void copy_variadic(Proxy p, T& value, Args&... args)
+    template<class Archive, class T, class... Args>
+    void copy_variadic(Archive p, T& value, Args&... args)
     {
         copy_variadic(p, value);
         copy_variadic(p, args...);
     }
 
-    template<class Proxy, class T>
-    void copy_variadic(Proxy p, T& t)
+    template<class Archive, class T>
+    void copy_variadic(Archive p, T& t)
     {
         copy_one(t, p);
     }
 
-    template<class Proxy, class Tup, std::size_t... Is>
-    void copy_tuple(Proxy p, Tup& t, std::index_sequence<Is...>)
+    template<class Archive, class Tup, std::size_t... Is>
+    void copy_tuple(Archive p, Tup& t, std::index_sequence<Is...>)
     {
         copy_variadic(p, std::get<Is>(t)...);
     }
 
 
-    template<class Proxy, class T>
-    void copy_one(T& value, Proxy p, specialized_tag)
+    template<class Archive, class T>
+    void copy_one(T& value, Archive p, specialized_tag)
     {
         T::serializer_type::serialize(value, p);
     }
 
-    template<class Proxy, class T>
-    void copy_one(T& value, Proxy p, trivially_copyable_tag)
+    template<class Archive, class T>
+    void copy_one(T& value, Archive a, trivially_copyable_tag)
     {
-        p.copy(value, sizeof(T));
+        a.add(value);
     }
 
-    template<class Proxy, class T>
-    void copy_one(T& value, Proxy p, iterable_tag)
+    template<class Archive, class T>
+    void copy_one(T& value, Archive& a, iterable_tag)
     {
         using std::begin;
         using std::end;
 
-        copy_size(value, p, proxy::is_input<Proxy>());
+        copy_size(value, a, Archive::is_input<Archive>());
 
         auto first = begin(value);
         auto last  = end(value);
 
         for (; first != last; ++first)
-            copy_one(*first, p, serialization_tag<std::decay_t<decltype(*first)>>());
+            copy_one(*first, a, serialization_tag<std::decay_t<decltype(*first)>>());
     }
 
-    template<class Proxy, class T>
-    void copy_one(T& value, Proxy p, tuple_tag)
+    template<class Archive, class T>
+    void copy_one(T& value, Archive& a, tuple_tag)
     {
-        copy_tuple(p, value, std::make_index_sequence<std::tuple_size<T>::value>());
+        copy_tuple(a, value, std::make_index_sequence<std::tuple_size<T>::value>());
     }
 
-    template<class Proxy, class T, std::size_t N>
-    void copy_one(T (&arr)[N], Proxy p)
+    /*template<class Archive, class T, std::size_t N>
+    void copy_one(T (&arr)[N], Archive& a)
     {
-        copy_array<Proxy, T, N>(arr, p, is_raw_serializable<T>());
-    }
+        copy_array<Archive, T, N>(arr, a, is_raw_serializable<T>());
+    }*/
 
-    template<class Proxy, class T, std::size_t N>
-    void copy_one(std::array<T, N>& arr, Proxy p)
+    /*template<class Archive, class T, std::size_t N>
+    void copy_one(std::array<T, N>& arr, Archive& a)
     {
-        copy_array<Proxy, T, N>(arr.data(), p, is_raw_serializable<T>());
-    }
+        copy_array<Archive, T, N>(arr.data(), a, is_raw_serializable<T>());
+    }*/
 
-    template<class Proxy, class T>
-    void copy_one(T& value, Proxy p)
+    template<class Archive, class T>
+    void copy_one(T& value, Archive& a)
     {
-        copy_one(value, p, serialization_tag<T>());
+        copy_one(value, a, serialization_tag<T>());
     }
 
 }} // namespace carbon::detail

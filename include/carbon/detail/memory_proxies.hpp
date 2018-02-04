@@ -91,11 +91,11 @@ namespace carbon {
         return buffer - temp;
     }
 
-    template<class T>
+    template<template<class> class Archive, class T>
     void deserialize(T& value, const std::uint8_t* buffer)
     {
-        proxy::unsafe_imemory_proxy proxy{ buffer };
-        detail::copy_one(value, proxy);
+        Archive<proxy::unsafe_imemory_proxy> ar{ buffer };
+        detail::copy_one(value, ar);
     }
 
 } // namespace carbon

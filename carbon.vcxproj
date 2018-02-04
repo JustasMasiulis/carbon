@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
+    <ClInclude Include="include\carbon\detail\binary_archive.hpp" />
     <ClInclude Include="include\carbon\detail\copy_one.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
     <ClInclude Include="include\carbon\detail\memory_proxies.hpp" />

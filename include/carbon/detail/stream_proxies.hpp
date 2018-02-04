@@ -16,7 +16,8 @@
 
 #pragma once
 #include "copy_one.hpp"
-#include <iostream>
+#include <ostream>
+#include <istream>
 
 namespace carbon {
 
@@ -27,9 +28,15 @@ namespace carbon {
             using proxy_category = input_proxy_tag;
 
             template<class T>
-            void copy(T& data, std::size_t size)
+            void copy_raw(T& data, std::size_t size)
             {
                 in.read(reinterpret_cast<char*>(::std::addressof<T>(data)), size);
+            }
+
+            template<class T>
+            void copy_text(T& data)
+            {
+                in >> data;
             }
         };
 
@@ -38,27 +45,35 @@ namespace carbon {
             using proxy_category = output_proxy_tag;
 
             template<class T>
-            void copy(const T& data, std::size_t size)
+            void copy_raw(const T& data, std::size_t size)
             {
                 out.write(reinterpret_cast<const char*>(::std::addressof(data)),
                           size);
+            }
+
+            template<class T>
+            void copy_text(const T& data)
+            {
+                out << data;
             }
         };
 
     } // namespace proxy
 
-    template<class T>
+    template<template<class> class Archive, class T>
     void serialize(T& value, std::ostream& out)
     {
-        proxy::ostream_proxy proxy{ out };
-        detail::copy_one(value, proxy);
+        proxy::ostream_proxy          proxy{ out };
+        Archive<proxy::ostream_proxy> ar(std::move(proxy));
+        detail::copy_one(value, ar);
     }
 
-    template<class T>
+    template<template<class> class Archive, class T>
     void deserialize(T& value, std::istream& in)
     {
-        proxy::istream_proxy proxy{ in };
-        detail::copy_one(value, proxy);
+        proxy::istream_proxy          proxy{ in };
+        Archive<proxy::istream_proxy> ar(std::move(proxy));
+        detail::copy_one(value, ar);
     }
 
 } // namespace carbon

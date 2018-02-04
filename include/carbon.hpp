@@ -19,6 +19,7 @@
 #include "carbon/detail/nargs_macro.hpp"
 #include "carbon/serializer.hpp"
 #include "carbon/proxies.hpp"
+#include "carbon/detail/binary_archive.hpp"
 
 // needed to fix msvc va args expansion
 #define CRBN_DETAIL_EXPAND(...) __VA_ARGS__
