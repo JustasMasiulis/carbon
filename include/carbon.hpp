@@ -20,6 +20,7 @@
 #include "carbon/serializer.hpp"
 #include "carbon/proxies.hpp"
 #include "carbon/detail/binary_archive.hpp"
+#include "carbon/detail/tstring.hpp"
 
 // needed to fix msvc va args expansion
 #define CRBN_DETAIL_EXPAND(...) __VA_ARGS__
@@ -27,6 +28,13 @@
 #define CARBON_SERIALIZABLE_(...) \
     CRBN_DETAIL_CAT(CRBN_DETAIL_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
 
+#define CARBON_NAMED_SERIALIZABLE_(...) \
+    CRBN_DETAIL_CAT(CRBN_DETAIL_NAMED_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
+
 #define CARBON_SERIALIZABLE(class_name, ...)    \
     using serializer_type = CRBN_DETAIL_EXPAND( \
         CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
+
+#define CARBON_NAMED_SERIALIZABLE(class_name, ...) \
+    using serializer_type = CRBN_DETAIL_EXPAND(    \
+        CARBON_NAMED_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
