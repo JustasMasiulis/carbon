@@ -44,6 +44,9 @@ namespace carbon { namespace detail {
                            string_builder<S<Hs..., C>, Cs...>>::type {};
 
     template<char... Cs>
-    struct tstring_ {};
+    struct tstring_ {
+        static constexpr std::size_t size          = sizeof...(Cs);
+        constexpr static char        str[size + 1] = { Cs..., '\0' };
+    };
 
 }} // namespace carbon::detail

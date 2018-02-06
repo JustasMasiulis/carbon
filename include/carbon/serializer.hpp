@@ -21,10 +21,10 @@ namespace carbon {
 
     template<class... Ms>
     struct serializer {
-        template<class T, class Proxy>
-        static void serialize(T& this_, Proxy proxy)
+        template<class T, class Archive>
+        static void serialize(T& this_, Archive& archive)
         {
-            detail::serialize_members<Proxy, Ms...>(this_, proxy);
+            detail::serialize_members<Archive, Ms...>(this_, archive);
         }
     };
 
