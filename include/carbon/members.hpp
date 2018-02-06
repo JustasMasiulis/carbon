@@ -36,17 +36,34 @@ namespace carbon {
         template<class T>
         using member_value_t = typename member_traits<T>::value_type;
 
-        template<class Proxy, class M, class M2, class... Rest>
-        static void serialize_members(typename M::class_type& target, Proxy proxy)
+        template<class Archive, class M>
+        inline void
+        serialize_one(typename M::class_type& value, Archive& ar, std::true_type)
         {
-            serialize_members<Proxy, M>(target, proxy);
-            serialize_members<Proxy, M2, Rest...>(target, proxy);
+            ar.template begin_object<typename M::value_type, typename M::name>();
+            M::value_type::serializer_type::serialize(value.*M::pointer, ar);
+            ar.template end_object<typename M::value_type, typename M::name>();
         }
 
-        template<class Proxy, class M>
-        static void serialize_members(typename M::class_type& value, Proxy proxy)
+        template<class Archive, class M>
+        inline void
+        serialize_one(typename M::class_type& value, Archive& ar, std::false_type)
         {
-            copy_one(value.*M::pointer, proxy);
+            ar.copy<typename M::value_type, typename M::name>(value.*M::pointer);
+        }
+
+        template<class Archive, class M, class M2, class... Rest>
+        static void serialize_members(typename M::class_type& target, Archive& ar)
+        {
+            serialize_members<Archive, M>(target, ar);
+            serialize_members<Archive, M2, Rest...>(target, ar);
+        }
+
+        template<class Archive, class M>
+        static void serialize_members(typename M::class_type& value, Archive& ar)
+        {
+            serialize_one<Archive, M>(
+                value, ar, is_serializer_specialized<typename M::value_type>());
         }
 
     } // namespace detail
@@ -55,14 +72,17 @@ namespace carbon {
     struct m_ {
         using value_type = detail::member_value_t<T>;
         using class_type = detail::member_class_t<T>;
+        using name       = void;
 
         constexpr static T pointer = P;
     };
 
     template<class Name, class T, T P>
     struct named_ {
+        using value_type           = detail::member_value_t<T>;
         using class_type           = detail::member_class_t<T>;
         constexpr static T pointer = P;
+        using name                 = Name;
     };
 
 } // namespace carbon

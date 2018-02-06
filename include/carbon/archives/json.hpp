@@ -9,42 +9,38 @@
 namespace carbon { namespace archive {
 
     class json_input {
-        rapidjson::Document                         _document;
-        std::stack<rapidjson::Document::ValueType*> _members;
-        rapidjson::Document::ValueType*             _cur_member;
+        rapidjson::Document                             _document;
+        std::stack<rapidjson::Document::MemberIterator> _members;
+        rapidjson::Document::MemberIterator             _current;
 
     public:
-        json_input(std::istream& stream) : _cur_member(&_document)
+        json_input(std::istream& stream)
         {
             rapidjson::IStreamWrapper stream_wrap(stream);
             _document.ParseStream(stream_wrap);
-            _members.push(&_document);
+            _current = _document.MemberBegin();
         }
 
         template<class T, class Tag>
         void begin_object()
         {
-           /* typename Tag::storage name;
-            Tag::copy_to_storage(name);
-            _cur_member =
-                &_cur_member
-                     ->AddMember({ name, Tag::size }, { rapidjson::kObjectType })
-                     .value;
-        */}
+            _members.push(_current);
+            _current = _current->value.MemberBegin();
+        }
 
-           template<class T, class Tag>
-           void copy(T& value)
-           {
-               /*value = _iters.top()->value.Get<T>();
-               ++_iters.top();*/
-           }
+        template<class T, class Tag>
+        void copy(T& value)
+        {
+            value = _current->value.Get<T>();
+            ++_current;
+        }
 
-           template<class T, class Tag>
-           void end_object()
-           {
-               /*_members.pop();
-               _cur_member = _members.top();*/
-           }
+        template<class T, class Tag>
+        void end_object()
+        {
+            _current = _members.top();
+            _members.pop();
+        }
     };
 
     class json_output {
@@ -71,14 +67,12 @@ namespace carbon { namespace archive {
         template<class T, class Tag>
         void begin_object()
         {
-            typename Tag::storage name;
-            Tag::copy_to_storage(name);
-            auto old_member = _cur_member;
-            _cur_member     = &_cur_member->AddMember(
+            _cur_member->AddMember(
                 rapidjson::GenericStringRef<char>(Tag::str),
                 rapidjson::Document::ValueType(rapidjson::kObjectType),
                 _document.GetAllocator());
-            _iters.push(old_member);
+            _iters.push(_cur_member);
+            _cur_member = &((--_cur_member->MemberEnd())->value);
         }
 
         template<class T, class Tag>

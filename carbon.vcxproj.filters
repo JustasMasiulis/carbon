@@ -54,6 +54,15 @@
     <ClInclude Include="include\carbon\detail\binary_archive.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\carbon\archives\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\proxy_ref.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\tstring.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test\main.cpp">

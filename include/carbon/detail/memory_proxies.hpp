@@ -82,7 +82,7 @@ namespace carbon {
 
     } // namespace detail
 
-    template<class T>
+    /*template<class Archive, class T>
     std::ptrdiff_t serialize(T& value, std::uint8_t* buffer)
     {
         auto temp = buffer;
@@ -91,11 +91,11 @@ namespace carbon {
         return buffer - temp;
     }
 
-    template<template<class> class Archive, class T>
+    template<class Archive, class T>
     void deserialize(T& value, const std::uint8_t* buffer)
     {
         Archive<proxy::unsafe_imemory_proxy> ar{ buffer };
         detail::copy_one(value, ar);
-    }
+    }*/
 
 } // namespace carbon

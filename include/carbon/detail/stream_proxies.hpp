@@ -60,19 +60,17 @@ namespace carbon {
 
     } // namespace proxy
 
-    template<template<class> class Archive, class T>
+    template<class Archive, class T>
     void serialize(T& value, std::ostream& out)
     {
-        proxy::ostream_proxy          proxy{ out };
-        Archive<proxy::ostream_proxy> ar(std::move(proxy));
+        Archive ar(out);
         detail::copy_one(value, ar);
     }
 
-    template<template<class> class Archive, class T>
+    template<class Archive, class T>
     void deserialize(T& value, std::istream& in)
     {
-        proxy::istream_proxy          proxy{ in };
-        Archive<proxy::istream_proxy> ar(std::move(proxy));
+        Archive ar(in);
         detail::copy_one(value, ar);
     }
 

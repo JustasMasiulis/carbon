@@ -20,8 +20,10 @@
 
 namespace carbon { namespace detail {
 
-    template<class Archive, class T>
-    void copy_size(T& value, Archive& a, std::true_type /* input Archive */)
+    template<class A, class T>
+    void copy_size(typename A::template ref_<T> value,
+                   A&                           archive,
+                   std::true_type /* input Archive */)
     {
         typename T::size_type size;
         copy_one(size, a);
@@ -36,14 +38,14 @@ namespace carbon { namespace detail {
     }
 
     template<class Archive, class T, class... Args>
-    void copy_variadic(Archive p, T& value, Args&... args)
+    void copy_variadic(Archive& p, T& value, Args&... args)
     {
         copy_variadic(p, value);
         copy_variadic(p, args...);
     }
 
     template<class Archive, class T>
-    void copy_variadic(Archive p, T& t)
+    void copy_variadic(Archive& p, T& t)
     {
         copy_one(t, p);
     }
@@ -56,15 +58,15 @@ namespace carbon { namespace detail {
 
 
     template<class Archive, class T>
-    void copy_one(T& value, Archive p, specialized_tag)
+    void copy_one(T& value, Archive& p, specialized_tag)
     {
         T::serializer_type::serialize(value, p);
     }
 
     template<class Archive, class T>
-    void copy_one(T& value, Archive a, trivially_copyable_tag)
+    void copy_one(T& value, Archive& a, trivially_copyable_tag)
     {
-        a.add(value);
+        a.copy(value);
     }
 
     template<class Archive, class T>

@@ -24,7 +24,7 @@ struct triv_copyable {
     double d;
     test   testerroo;
 
-    CARBON_NAMED_SERIALIZABLE(triv_copyable, i, floateroo, d);
+    CARBON_NAMED_SERIALIZABLE(triv_copyable, i, floateroo, d, testerroo);
 };
 
 struct foo {
@@ -46,11 +46,11 @@ int main()
     f.a[1] = 2;
 
     triv_copyable tc;
-    tc.d   = 1;
+    /*tc.d   = 1;
     tc.floateroo   = 2;
     tc.i   = 5;
     tc.testerroo.a = 6;
-    tc.testerroo.b = 1233;
+    tc.testerroo.b = 1233;*/
     std::ifstream in("testj.txt", std::ios::binary);
 
     if (in.is_open()) {

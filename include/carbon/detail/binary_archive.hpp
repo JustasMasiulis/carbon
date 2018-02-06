@@ -1,5 +1,6 @@
 #pragma once
 #include "meta.hpp"
+#include "proxy_ref.hpp"
 
 namespace carbon { namespace archive {
 
@@ -22,6 +23,9 @@ namespace carbon { namespace archive {
         }
 
     public:
+        template<class T>
+        using ref_ = detail::proxy_ref_<T, Proxy>;
+
         binary(Proxy&& proxy_init) : _proxy(std::move(proxy_init)) {}
 
         template<class T>
