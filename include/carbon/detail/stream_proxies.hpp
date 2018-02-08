@@ -21,57 +21,18 @@
 
 namespace carbon {
 
-    namespace proxy {
-
-        struct istream_proxy {
-            std::istream& in;
-            using proxy_category = input_proxy_tag;
-
-            template<class T>
-            void copy_raw(T& data, std::size_t size)
-            {
-                in.read(reinterpret_cast<char*>(::std::addressof<T>(data)), size);
-            }
-
-            template<class T>
-            void copy_text(T& data)
-            {
-                in >> data;
-            }
-        };
-
-        struct ostream_proxy {
-            std::ostream& out;
-            using proxy_category = output_proxy_tag;
-
-            template<class T>
-            void copy_raw(const T& data, std::size_t size)
-            {
-                out.write(reinterpret_cast<const char*>(::std::addressof(data)),
-                          size);
-            }
-
-            template<class T>
-            void copy_text(const T& data)
-            {
-                out << data;
-            }
-        };
-
-    } // namespace proxy
-
     template<class Archive, class T>
-    void serialize(T& value, std::ostream& out)
+    void serialize(const T& value, std::ostream& out)
     {
         Archive ar(out);
-        detail::copy_one(value, ar);
+        T::serializer_type::serialize<T>(value, ar);
     }
 
     template<class Archive, class T>
     void deserialize(T& value, std::istream& in)
     {
         Archive ar(in);
-        detail::copy_one(value, ar);
+        T::serializer_type::serialize<T>(value, ar);
     }
 
 } // namespace carbon

@@ -42,13 +42,7 @@
     <ClInclude Include="include\carbon\detail\stream_proxies.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\memory_proxies.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\carbon\detail\serialization_tag.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\carbon\detail\proxy_tags.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\carbon\detail\binary_archive.hpp">
@@ -61,6 +55,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\carbon\detail\tstring.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\archived_value_t.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

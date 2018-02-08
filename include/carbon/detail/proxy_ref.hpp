@@ -1,5 +1,4 @@
 #pragma once
-#include "proxy_tags.hpp"
 
 namespace carbon { namespace detail {
 
@@ -16,7 +15,7 @@ namespace carbon { namespace detail {
         using type = const T&;
     };
 
-    template<class T, class Proxy>
-    using proxy_ref_ = typename _proxy_ref<T, proxy::is_output<Proxy>>::type;
+    //template<class T, class Proxy>
+    //using proxy_ref_ = typename _proxy_ref<T, proxy::is_output<Proxy>>::type;
 
 }} // namespace carbon::detail

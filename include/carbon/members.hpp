@@ -15,7 +15,8 @@
  */
 
 #pragma once
-#include "detail/copy_one.hpp"
+#include "detail/meta.hpp"
+#include "detail/archived_value_t.hpp"
 
 namespace carbon {
 
@@ -38,7 +39,9 @@ namespace carbon {
 
         template<class Archive, class M>
         inline void
-        serialize_one(typename M::class_type& value, Archive& ar, std::true_type)
+        serialize_one(util::archived_value_t<typename M::class_type, Archive> value,
+                      Archive&                                                 ar,
+                      std::true_type)
         {
             ar.template begin_object<typename M::value_type, typename M::name>();
             M::value_type::serializer_type::serialize(value.*M::pointer, ar);
@@ -47,20 +50,26 @@ namespace carbon {
 
         template<class Archive, class M>
         inline void
-        serialize_one(typename M::class_type& value, Archive& ar, std::false_type)
+        serialize_one(util::archived_value_t<typename M::class_type, Archive> value,
+                      Archive&                                                 ar,
+                      std::false_type)
         {
-            ar.copy<typename M::value_type, typename M::name>(value.*M::pointer);
+            ar.copy<typename M::name>(value.*M::pointer);
         }
 
         template<class Archive, class M, class M2, class... Rest>
-        static void serialize_members(typename M::class_type& target, Archive& ar)
+        static void serialize_members(
+            util::archived_value_t<typename M::class_type, Archive> value,
+            Archive&                                                 ar)
         {
-            serialize_members<Archive, M>(target, ar);
-            serialize_members<Archive, M2, Rest...>(target, ar);
+            serialize_members<Archive, M>(value, ar);
+            serialize_members<Archive, M2, Rest...>(value, ar);
         }
 
         template<class Archive, class M>
-        static void serialize_members(typename M::class_type& value, Archive& ar)
+        static void serialize_members(
+            util::archived_value_t<typename M::class_type, Archive> value,
+            Archive&                                                 ar)
         {
             serialize_one<Archive, M>(
                 value, ar, is_serializer_specialized<typename M::value_type>());

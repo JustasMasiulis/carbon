@@ -22,7 +22,8 @@ namespace carbon {
     template<class... Ms>
     struct serializer {
         template<class T, class Archive>
-        static void serialize(T& this_, Archive& archive)
+        static void serialize(util::archived_value_t<T, Archive> this_,
+                              Archive&                           archive)
         {
             detail::serialize_members<Archive, Ms...>(this_, archive);
         }

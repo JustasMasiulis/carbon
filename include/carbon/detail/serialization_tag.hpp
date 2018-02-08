@@ -23,7 +23,9 @@ namespace carbon { namespace detail {
     struct specialized_tag {};
     struct iterable_tag {};
     struct tuple_tag {};
-    struct array_tag {};
+
+    struct input_archive_tag {};
+    struct output_archive_tag {};
 
     // I know it's ugly, okay
     template<class T>
@@ -31,11 +33,13 @@ namespace carbon { namespace detail {
         is_serializer_specialized<T>::value,
         specialized_tag,
         std::conditional_t<
-            std::is_trivially_copyable<T>::value,
-            trivially_copyable_tag,
+            is_iterable<T>::value,
+            iterable_tag,
             std::conditional_t<
-                is_iterable<T>::value,
-                iterable_tag,
-                std::conditional_t<is_tuple_like<T>::value, tuple_tag, void>>>>;
+                detail::is_tuple_like<T>::value,
+                tuple_tag,
+                std::conditional_t<std::is_trivially_copyable<T>::value,
+                                   trivially_copyable_tag,
+                                   void>>>>;
 
 }} // namespace carbon::detail

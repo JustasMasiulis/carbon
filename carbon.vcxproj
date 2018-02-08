@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -127,14 +127,13 @@
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
     <ClInclude Include="include\carbon\archives\json.hpp" />
+    <ClInclude Include="include\carbon\detail\archived_value_t.hpp" />
     <ClInclude Include="include\carbon\detail\binary_archive.hpp" />
     <ClInclude Include="include\carbon\detail\copy_one.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
-    <ClInclude Include="include\carbon\detail\memory_proxies.hpp" />
     <ClInclude Include="include\carbon\detail\meta.hpp" />
     <ClInclude Include="include\carbon\detail\nargs_macro.hpp" />
     <ClInclude Include="include\carbon\detail\proxy_ref.hpp" />
-    <ClInclude Include="include\carbon\detail\proxy_tags.hpp" />
     <ClInclude Include="include\carbon\detail\serialization_tag.hpp" />
     <ClInclude Include="include\carbon\detail\stream_proxies.hpp" />
     <ClInclude Include="include\carbon\detail\tstring.hpp" />
