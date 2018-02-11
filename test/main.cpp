@@ -1,57 +1,64 @@
-//#include "../include/carbon.hpp"
-//#include <fstream>
-//#include <vector>
-//#include <list>
-//#include <tuple>
-//#include <array>
-//#include <map>
-//#include "../include/carbon/archives/json.hpp"
-//
-// struct baz {
-//    std::vector<int> v = { 5, 6, 3, 4, 5 };
-//    std::size_t      s = 2;
-//    CARBON_NAMED_SERIALIZABLE(baz, v, s);
-//};
-//
-// struct test {
-//    int   a = 78;
-//    float b = 79;
-//    CARBON_NAMED_SERIALIZABLE(test, a, b);
-//};
-//
-// struct triv_copyable {
-//    std::map<std::string, int>                    fuckmedaddy{ {"asdasd", 6} };
-//    int                                           i;
-//    std::tuple<baz, std::pair<test, test>, float> tup;
-//    float                                         floateroo;
-//    std::array<std::array<test, 2>, 2> arr{ std::array<test, 2>{ test{ 1, 2.f },
-//                                                                 test{ 2, 3.f } },
-//                                            { test{ 4, 5.f }, test{ 6, 7.f } } };
-//    double                             d;
-//
-//    CARBON_NAMED_SERIALIZABLE(triv_copyable, fuckmedaddy, i, tup, floateroo, arr,
-//    d);
-//};
-//
 #include "../include/carbon.hpp"
-struct foo {
+#include "../include/carbon/detail/visit_members.hpp"
+
+struct bar {
     template<class Carbon>
-    foo(Carbon c, const char* test_arg)
+    bar(Carbon c, int x, int y) : i(c.i() * x), f(c.f() * y)
     {}
-    // triv_copyable          tc;
     int   i;
     float f;
-    bool  b;
-    char  c;
+};
 
-    CARBON_SERIALIZABLE(foo, i, f, b, c);
+
+struct fake_arch {
+    template<class T>
+    void copy(T) {}
+};
+
+struct foo {
+    template<class Carbon>
+    foo(Carbon c, const char* test_arg) : b(c.b(5, 6))
+    {
+        c.unpack_rest(*this);
+    }
+    bar  b;
+    char c;
+
+    constexpr static auto carbon_members{ std::make_tuple(&foo::b, &foo::c) };
+    template<class T, class A>
+    struct carbon_type {
+        A&   archive;
+        bool unpacked[2] = false;
+
+        template<class... Args>
+        inline bar b(Args&&... args)
+        {
+            unpacked[0] = 1;
+            return bar(bar::carbon_type<bar, A>(archive), std::forward<Args>(args)...);
+        }
+        char        c() {
+            
+        
+        }
+        inline void unpack_rest(T* this_)
+        {
+            // if (!unpacked[0])
+            //   this_.*std::get<0>(member_pointers) = ...;
+            // if (!unpacked[1])
+            //  this_.std::get<1>(member_pointers) = ...;
+        }
+    };
+
+    // constexpr static auto ml{ carbon::detail::make_members_list(&foo::i, &foo::f)
+    // };
+    // CARBON_SERIALIZABLE(foo, i, f, b, c);
     // CARBON_NAMED_SERIALIZABLE(foo, tc, i, a);
 };
 
 int main()
 {
-    float archive;
-    carbon::construct<foo>(archive, "wubadubdub");
+    // float archive;
+    // carbon::construct<foo>(archive, "wubadubdub");
 }
 //
 // int main()

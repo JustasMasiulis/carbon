@@ -49,16 +49,15 @@
 //        // macro body
 //        out << "template<class _xCT, class _xCA> "
 //            << "struct carbon_type {\\\n";
-//        // this object
-//        out << "\t_xCT* _this_;\\\n";
 //        // archive ref
-//        out << "\t_xCA _archive_;\\\n";
+//        out << "\t_xCA& _archive_;\\\n";
 //        // constructor
-//        out << "\tcarbon_type(_xCT* t, _xCA a) : _this_(t), _archive_(a) {}\\\n";
+//        out << "\tcarbon_type(_xCA& a) : _archive_(a) {}\\\n";
 //
 //        // member pointers tuple
 //        out << "\tconstexpr static auto member_pointers{std::make_tuple("
 //            << expand_args(i, "&_xCT::") << ")};\\\n";
+//
 //
 //        for (int j = 0; j < i; ++j) {
 //            // functions to get the separate members

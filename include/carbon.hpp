@@ -17,6 +17,7 @@
 #pragma once
 #include "carbon/detail/generated_macros.hpp"
 #include "carbon/detail/util_macros.hpp"
+#include "carbon/detail/members_list.hpp"
 #include <utility>
 
 // needed to fix msvc va args expansion
@@ -37,16 +38,30 @@
 
 namespace carbon {
 
+    // TODO forceinline this
+    /// \brief Constructs and returns an oject of type T using its constructor that
+    /// accepts a carbon_type and the forwarded arguments
+    /// ## usage
+    /// ```cpp
+    /// // will call foo::foo(foo::carbon_type<const foo, decltype(my_archive)&>, float)
+    /// auto f = carbon::construct<foo>(my_archive, 5.0)
+    /// ```
     template<class T, class Archive, class... Args>
     inline T construct(Archive& archive, Args&&... args)
     {
         using carbon_type = typename T::template carbon_type<const T, Archive&>;
 
-        typename std::aligned_storage<sizeof(T), alignof(T)>::type storage;
+        // MSVC doesnt allow Type var(&var) so we need to create some uninitialized
+        // memory for storage whose address we can get
+        std::aligned_storage_t<sizeof(T), alignof(T)> storage;
+
+        // call the global non overloaded operator new, because we don't
+        // want any side effects.
         ::new (static_cast<void*>(&storage))
-            T(carbon_type{ reinterpret_cast<const T*>(&storage), archive },
+            T(carbon_type(reinterpret_cast<const T*>(&storage), archive),
               std::forward<Args>(args)...);
 
+        // return the newly created object. This function should be optimized out.
         return *reinterpret_cast<T*>(&storage);
     }
 
