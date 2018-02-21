@@ -126,12 +126,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
+    <ClInclude Include="include\carbon\detail\visit_members.hpp" />
+    <ClInclude Include="include\carbon\detail\traits.hpp" />
+    <ClInclude Include="include\carbon\detail\unpack.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
+    <ClInclude Include="include\carbon\detail\members_list.hpp" />
     <ClInclude Include="include\carbon\detail\tstring.hpp" />
     <ClInclude Include="include\carbon\detail\util_macros.hpp" />
-    <ClInclude Include="include\carbon\members.hpp" />
-    <ClInclude Include="include\carbon\proxies.hpp" />
-    <ClInclude Include="include\carbon\serializer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test\macro_generator.cpp" />
