@@ -27,9 +27,6 @@
     <ClInclude Include="include\carbon\detail\util_macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\members_list.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\carbon\detail\unpack.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

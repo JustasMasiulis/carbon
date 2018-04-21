@@ -130,7 +130,6 @@
     <ClInclude Include="include\carbon\detail\traits.hpp" />
     <ClInclude Include="include\carbon\detail\unpack.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
-    <ClInclude Include="include\carbon\detail\members_list.hpp" />
     <ClInclude Include="include\carbon\detail\tstring.hpp" />
     <ClInclude Include="include\carbon\detail\util_macros.hpp" />
   </ItemGroup>

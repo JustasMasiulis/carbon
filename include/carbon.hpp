@@ -17,7 +17,6 @@
 #pragma once
 #include "carbon/detail/generated_macros.hpp"
 #include "carbon/detail/util_macros.hpp"
-#include "carbon/detail/members_list.hpp"
 #include <utility>
 
 // needed to fix msvc va args expansion
@@ -33,8 +32,7 @@
     CRBN_DETAIL_EXPAND(CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
 
 #define CARBON_NAMED_SERIALIZABLE(class_name, ...) \
-    CRBN_DETAIL_EXPAND(                            \
-        CARBON_NAMED_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
+    CRBN_DETAIL_EXPAND(CARBON_NAMED_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
 
 namespace carbon {
 
@@ -46,23 +44,13 @@ namespace carbon {
     /// // will call foo::foo(foo::carbon_type<const foo, decltype(my_archive)&>, float)
     /// auto f = carbon::construct<foo>(my_archive, 5.0)
     /// ```
-    template<class T, class Archive, class... Args>
-    inline T construct(Archive& archive, Args&&... args)
+    // template<class T, class Archive, class... Args>
+    // inline T construct(Archive& archive, Args&&... args);
+
+    template<class T, class Archive>
+    void serialize(T& this_ref, Archive& a)
     {
-        using carbon_type = typename T::template carbon_type<const T, Archive&>;
-
-        // MSVC doesnt allow Type var(&var) so we need to create some uninitialized
-        // memory for storage whose address we can get
-        std::aligned_storage_t<sizeof(T), alignof(T)> storage;
-
-        // call the global non overloaded operator new, because we don't
-        // want any side effects.
-        ::new (static_cast<void*>(&storage))
-            T(carbon_type(reinterpret_cast<const T*>(&storage), archive),
-              std::forward<Args>(args)...);
-
-        // return the newly created object. This function should be optimized out.
-        return *reinterpret_cast<T*>(&storage);
+        detail::visit_members(this_ref, a);
     }
 
 } // namespace carbon

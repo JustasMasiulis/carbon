@@ -6,40 +6,29 @@
 
 namespace carbon { namespace detail {
 
-    template<class T, class V>
-    struct constant_ {
-        constexpr static T value = V;
+    template<class T, class Archive, std::size_t N, std::size_t I = 0>
+    struct members_visitor_t {
+        static void visit(T& this_ref, Archive& archive)
+        {
+            constexpr auto mptr = std::get<I>(T::template carbon_type<T>::target_members);
+            visit_members(this_ref.*mptr);
+            members_visitor_t<T, Archive, N, I + 1>::visit(this_ref, archive);
+        }
     };
 
-    template<class T, class Archive, class Callback, class... Mptrs>
-    void _visit_members_unpacked(T& this_, Archive& archive, Callback cb)
-    {}
+    template<class T, class Archive, std::size_t N>
+    struct members_visitor_t<T, Archive, N, N> {
+        constexpr static void visit(T&, Archive&) noexcept {}
+    };
 
-
-    template<class T, class Archive, class Callback, std::size_t... Is>
-    void _visit_members_indexed(T&       this_,
-                                Archive& archive,
-                                Callback cb,
-                                std::index_sequence<Is...>)
+    template<class T, class Archive>
+    void visit_members(T& this_ref, Archive& archive)
     {
-        _visit_members_unpacked<
-            T,
-            Archive,
-            Callback,
-            constant_<std::tuple_element_t<Is, T::carbon_members>,
-                      std::get<Is>(T::carbon_members)>...>(this_, archive, cb);
-    }
-
-
-    template<class T, class Archive, class Callback>
-    void visit_members(T& this_, Archive& archive, Callback cb)
-    {
-        if constexpr (traits::has_carbon_type<T>::value)
-            _visit_members(this_,
-                           archive,
-                           cb,
-                           std::make_index_sequence<
-                               std::tuple_size<T::carbon_members>::value>());
+        if constexpr (traits::has_carbon_type<T>::value) {
+            constexpr auto size =
+                std::tuple_size<T::template carbon_type<T>::target_members>::value;
+            members_visitor_t<T, Archive, size>::visit(this_ref, archive);
+        }
         else
             archive.copy(this_);
     }
