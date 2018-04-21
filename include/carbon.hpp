@@ -17,22 +17,13 @@
 #pragma once
 #include "carbon/detail/generated_macros.hpp"
 #include "carbon/detail/util_macros.hpp"
-#include <utility>
+#include "carbon/detail/visit_members.hpp"
 
 // needed to fix msvc va args expansion
 #define CRBN_DETAIL_EXPAND(...) __VA_ARGS__
 
-#define CARBON_SERIALIZABLE_(...) \
+#define CARBONIZE(...) \
     CRBN_DETAIL_CAT(CRBN_DETAIL_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
-
-#define CARBON_NAMED_SERIALIZABLE_(...) \
-    CRBN_DETAIL_CAT(CRBN_DETAIL_NAMED_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
-
-#define CARBON_SERIALIZABLE(class_name, ...) \
-    CRBN_DETAIL_EXPAND(CARBON_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
-
-#define CARBON_NAMED_SERIALIZABLE(class_name, ...) \
-    CRBN_DETAIL_EXPAND(CARBON_NAMED_SERIALIZABLE_(__VA_ARGS__)(class_name, __VA_ARGS__))
 
 namespace carbon {
 
@@ -48,9 +39,10 @@ namespace carbon {
     // inline T construct(Archive& archive, Args&&... args);
 
     template<class T, class Archive>
-    void serialize(T& this_ref, Archive& a)
+    void serialize(T& value, Archive& a)
     {
-        detail::visit_members(this_ref, a);
+        constexpr auto tag = detail::serialization_tag<T>();
+        detail::copy_dispatch(value, a, tag);
     }
 
 } // namespace carbon
