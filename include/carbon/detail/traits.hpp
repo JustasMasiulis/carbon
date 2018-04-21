@@ -2,6 +2,7 @@
 #define CARBON_DETAIL_TRAITS_HPP
 
 #include <type_traits>
+#include <cstdint>
 
 namespace carbon { namespace traits {
 
@@ -21,10 +22,30 @@ namespace carbon { namespace traits {
     struct has_carbon_type : std::false_type {};
 
     template<class T>
-    struct has_carbon_type<T,
-                           std::void_t<typename T::template carbon_type<void, void>>>
+    struct has_carbon_type<T, std::void_t<typename T::template carbon_type<void, void>>>
         : std::true_type {};
     /// @}
+
+    using std::size;
+    template<class T, class = void>
+    struct size_getter {
+        static std::uint32_t get(T& value)
+        {
+            using std::begin;
+            using std::end;
+            const auto first = begin(value);
+            const auto last  = end(value);
+            return static_cast<std::uint32_t>(last - first);
+        }
+    };
+
+    template<class T>
+    struct size_getter<T, std::void_t<decltype(size(std::declval<T&>()))>> {
+        static std::uint32_t get(T& value)
+        {
+            return static_cast<std::uint32_t>(size(value));
+        }
+    };
 
 }} // namespace carbon::traits
 
