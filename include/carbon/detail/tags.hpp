@@ -82,8 +82,6 @@ namespace carbon { namespace detail {
     {
         if constexpr (traits::has_carbon_type<T>::value)
             return tag::specialized();
-        if constexpr (std::is_trivially_copyable_v<T>)
-            return tag::trivially_copyable();
         else if constexpr (is_iterable<T>::value) {
             if constexpr (is_array<T>::value)
                 return tag::array();
@@ -92,6 +90,8 @@ namespace carbon { namespace detail {
             else
                 return tag::iterable();
         }
+        else if constexpr (std::is_trivially_copyable_v<T>)
+            return tag::trivially_copyable();
         else if constexpr (is_tuple_like<T>::value)
             return tag::tuple_tag();
         else
