@@ -14,6 +14,13 @@ namespace carbon { namespace detail {
     }
 
     template<class T, class Archive>
+    inline void copy_dispatch(T& value, Archive& a, tag::none)
+    {
+        constexpr auto size = boost::pfr::detail::fields_count<T>();
+        magic_members_visitor_t<T, Archive, size>::visit(value, a);
+    }
+
+    template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::trivially_copyable)
     {
         a.copy(value);
