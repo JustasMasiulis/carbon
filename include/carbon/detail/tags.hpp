@@ -33,7 +33,7 @@ namespace carbon { namespace detail {
     struct is_array<T[N]> : std::true_type {};
 
 
-    template<class T, std::size_t N>
+    template<class T>
     struct array_traits;
 
     template<class T, std::size_t N>
