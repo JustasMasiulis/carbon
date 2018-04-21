@@ -1,8 +1,8 @@
 #ifndef CARBON_VISIT_MEMBERS_HPP
 #define CARBON_VISIT_MEMBERS_HPP
 
-#include "generated_type_to_tuple.hpp"
 #include "tags.hpp"
+#include "generated_type_to_tuple.hpp"
 #include "copy_dispatch.hpp"
 
 namespace carbon { namespace detail {
@@ -28,7 +28,8 @@ namespace carbon { namespace detail {
         {
             auto& member_ref = boost::pfr::detail::sequence_tuple::get<I>(
                 boost::pfr::detail::tie_as_tuple(this_ref));
-            visit_members(member_ref, archive);
+            using type = std::remove_reference_t<decltype(member_ref)>;
+            copy_dispatch(member_ref, archive, serialization_tag<type>());
 
             magic_members_visitor_t<T, Archive, N, I + 1>::visit(this_ref, archive);
         }
@@ -39,12 +40,6 @@ namespace carbon { namespace detail {
         constexpr static void visit(T&, Archive&) noexcept {}
     };
 
-    template<class T, class Archive>
-    inline void visit_members(T& value, Archive& archive)
-    {
-        constexpr auto tag = serialization_tag<T>();
-        copy_dispatch(value, archive, tag);
-    }
 }} // namespace carbon::detail
 
 #endif // !CARBON_VISIT_MEMBERS_HPP

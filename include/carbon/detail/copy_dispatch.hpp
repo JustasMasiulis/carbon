@@ -1,5 +1,5 @@
-#ifndef CARBON_DETAIL_UNPACK_HPP
-#define CARBON_DETAIL_UNPACK_HPP
+#ifndef CARBON_DETAIL_COPY_DISPATCH_HPP
+#define CARBON_DETAIL_COPY_DISPATCH_HPP
 
 #include "visit_members.hpp"
 
@@ -34,7 +34,7 @@ namespace carbon { namespace detail {
         using type = std::remove_reference_t<decltype(*begin(value))>;
 
         constexpr auto type_tag = serialization_tag<type>();
-        if constexpr (type_tag == tag::trivially_copyable)
+        if constexpr (std::is_same_v<decltype(type_tag), tag::trivially_copyable>)
             a.copy(*begin(value), traits::size_getter<T>::get(value) * sizeof(T));
         else {
             auto       first = begin(value);
@@ -52,7 +52,7 @@ namespace carbon { namespace detail {
         using type = std::remove_reference_t<decltype(*begin(value))>;
 
         constexpr auto type_tag = serialization_tag<type>();
-        if constexpr (type_tag == tag::trivially_copyable) {
+        if constexpr (std::is_same_v<decltype(type_tag), tag::trivially_copyable>) {
             const auto size = traits::size_getter<T>::get(value);
             a.copy(size);
             a.copy(*begin(value), size * sizeof(T));
@@ -60,7 +60,7 @@ namespace carbon { namespace detail {
         else {
             auto       first = begin(value);
             const auto last  = end(value);
-            const auto size  = static_cast<std::uint32_t>(last - first);
+            auto       size  = static_cast<std::uint32_t>(last - first);
             a.copy(size);
             for (; first != last; ++first)
                 copy_dispatch(*first, a, type_tag);
@@ -75,13 +75,19 @@ namespace carbon { namespace detail {
 
         auto       first = begin(value);
         const auto last  = end(value);
-        const auto size  = static_cast<std::uint32_t>(last - first);
+        auto       size  = static_cast<std::uint32_t>(last - first);
         a.copy(size);
 
         for (; first != last; ++first)
             visit_members(*first, a);
     }
 
+    template<class T, class Archive>
+    inline void copy_dispatch(T& value, Archive& a, tag::tuple)
+    {
+        throw std::runtime_error("not implemented");
+    }
+
 }} // namespace carbon::detail
 
-#endif // !CARBON_DETAIL_UNPACK_HPP
+#endif // !CARBON_DETAIL_COPY_DISPATCH_HPP
