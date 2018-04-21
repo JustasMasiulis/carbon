@@ -6,6 +6,7 @@
 #include <iterator>
 #include <utility>
 
+#include <tuple>
 #include <string>
 #include <vector>
 #include <array>
@@ -63,7 +64,8 @@ namespace carbon { namespace detail {
     struct is_tuple_like : std::false_type {};
 
     template<class T>
-    struct is_tuple_like<T, std::void_t<std::tuple_size<T>>> : std::true_type {};
+    struct is_tuple_like<T, std::void_t<decltype(std::tuple_size<T>::value)>>
+        : std::true_type {};
 
     namespace tag {
 
@@ -72,7 +74,7 @@ namespace carbon { namespace detail {
         struct array {};
         struct iterable {};
         struct continguos_iterable {};
-        struct tuple_tag {};
+        struct tuple {};
         struct none {};
 
     } // namespace tag
@@ -93,7 +95,7 @@ namespace carbon { namespace detail {
         else if constexpr (std::is_trivially_copyable_v<T>)
             return tag::trivially_copyable();
         else if constexpr (is_tuple_like<T>::value)
-            return tag::tuple_tag();
+            return tag::tuple();
         else
             return tag::none();
     }
