@@ -84,9 +84,9 @@ namespace carbon { namespace detail {
             a.copy(size);
             while (size--) {
                 if constexpr (traits::has_emplace_back<T>::value)
-                    copy_dispatch(value.emplace_back(), tag);
+                    copy_dispatch(value.emplace_back(), a, tag);
                 else // TODO save the iterator
-                    copy_dispatch(*value.emplace(end(value)), tag);
+                    copy_dispatch(*value.emplace(end(value)), a, tag);
             }
         }
         else {
