@@ -5,6 +5,7 @@
 
 namespace carbon { namespace detail {
 
+    /// \brief Contains all serialization tag types
     namespace tag {
 
         struct continguos_iterable {};
@@ -17,6 +18,7 @@ namespace carbon { namespace detail {
 
     } // namespace tag
 
+    /// \brief returns the serialization tag for type T
     template<class T>
     inline constexpr auto serialization_tag() noexcept
     {
@@ -38,6 +40,7 @@ namespace carbon { namespace detail {
             return tag::none();
     }
 
+    /// \brief the serialization tag type of T
     template<class T>
     using serialization_tag_t = std::decay_t<decltype(serialization_tag<T>())>;
 
