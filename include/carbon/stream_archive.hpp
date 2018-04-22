@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CARBON_STREAM_ARCHIVE_HPP
+#define CARBON_STREAM_ARCHIVE_HPP
 #include <istream>
 #include <ostream>
 
@@ -10,6 +11,8 @@ namespace carbon {
             std::istream& _stream;
 
         public:
+            constexpr static bool is_input_archive = true;
+
             stream(std::istream& is) noexcept : _stream(is) {}
 
             template<class T>
@@ -33,6 +36,8 @@ namespace carbon {
             std::ostream& _stream;
 
         public:
+            constexpr static bool is_input_archive = false;
+
             stream(std::ostream& os) noexcept : _stream(os) {}
 
             template<class T>
@@ -51,3 +56,5 @@ namespace carbon {
     } // namespace output_archive
 
 } // namespace carbon
+
+#endif

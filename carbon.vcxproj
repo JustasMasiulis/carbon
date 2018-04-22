@@ -78,7 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessToFile>true</PreprocessToFile>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -100,7 +100,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
@@ -116,7 +116,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
@@ -126,11 +126,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
+    <ClInclude Include="include\carbon\detail\size_dispatch.hpp" />
+    <ClInclude Include="include\carbon\memory_archive.hpp" />
+    <ClInclude Include="include\carbon\stream_archive.hpp" />
+    <ClInclude Include="include\carbon\detail\fields_count.hpp" />
+    <ClInclude Include="include\carbon\detail\generated_type_to_tuple.hpp" />
+    <ClInclude Include="include\carbon\detail\sequence_tuple.hpp" />
+    <ClInclude Include="include\carbon\detail\tags.hpp" />
     <ClInclude Include="include\carbon\detail\visit_members.hpp" />
     <ClInclude Include="include\carbon\detail\traits.hpp" />
-    <ClInclude Include="include\carbon\detail\unpack.hpp" />
+    <ClInclude Include="include\carbon\detail\copy_dispatch.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
-    <ClInclude Include="include\carbon\detail\tstring.hpp" />
     <ClInclude Include="include\carbon\detail\util_macros.hpp" />
   </ItemGroup>
   <ItemGroup>

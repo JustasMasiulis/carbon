@@ -18,22 +18,40 @@
     <ClInclude Include="include\carbon.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\tstring.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\carbon\detail\generated_macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\carbon\detail\util_macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\unpack.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\carbon\detail\traits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\carbon\detail\visit_members.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\tags.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\fields_count.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\generated_type_to_tuple.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\sequence_tuple.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\copy_dispatch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\stream_archive.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\size_dispatch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\memory_archive.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
