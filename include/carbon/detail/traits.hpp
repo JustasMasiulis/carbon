@@ -1,58 +1,70 @@
 #ifndef CARBON_DETAIL_TRAITS_HPP
 #define CARBON_DETAIL_TRAITS_HPP
 
+// basic meta stuff
 #include <type_traits>
-#include <cstdint>
+#include <utility>
+
+// required for detection and specializations
+#include <string>
+#include <vector>
+#include <array>
+#include <tuple>
+
+/// \brief helper macro to create detection structs
+#define CRBN_DETAIL_DETECT_T(name, ...) \
+    template<class, class = void>       \
+    struct name : std::false_type {};   \
+                                        \
+    template<class T>                   \
+    struct name<T, std::void_t<__VA_ARGS__>> : std::true_type {};
+
 
 namespace carbon { namespace traits {
 
-    namespace detail {
+    using std::begin;
+    using std::end;
 
-        /// \brief void_t was only introduced in c++17 although it
-        /// should work even on c++14
-        template<class...>
-        using void_t = void;
+    /// \brief true_type if the type has carbon_type member false_type if not
+    CRBN_DETAIL_DETECT_T(has_carbon_type, typename T::template carbon_type<T>);
 
-    } // namespace detail
+    /// \brief true_type if the type has emplace_back member function false_type if not
+    CRBN_DETAIL_DETECT_T(has_emplace_back, decltype(std::declval<T&>().emplace_back()));
 
-    /// \brief std::true_type if a type has carbon_type member
-    /// false if not
+    /// \brief true_type if begin(T&) and end(T&) are valid false_type if not
+    CRBN_DETAIL_DETECT_T(is_iterable,
+                         decltype(begin(std::declval<T&>())),
+                         decltype(end(std::declval<T&>())));
+
+    /// \brief true_type if std::tuple_size<T>::value is valid false_type if not
+    CRBN_DETAIL_DETECT_T(is_tuple_like, decltype(std::tuple_size<T>::value));
+
+    /// \brief true_type if T is an std::array or a C array
     /// @{
-    template<class, class = detail::void_t<>>
-    struct has_carbon_type : std::false_type {};
-
     template<class T>
-    struct has_carbon_type<T, std::void_t<typename T::template carbon_type<void, void>>>
-        : std::true_type {};
+    struct is_array : std::false_type {};
+
+    template<class T, std::size_t N>
+    struct is_array<std::array<T, N>> : std::true_type {};
+
+    template<class T, std::size_t N>
+    struct is_array<T[N]> : std::true_type {};
     /// @}
 
-    template<class T, class = void>
-    struct has_emplace_back : std::false_type {};
+    /// \brief true_type if T is an std::vector or an std::string
+    /// @{
     template<class T>
-    struct has_emplace_back<T, std::void_t<decltype(std::declval<T&>().emplace_back())>>
-        : std::true_type {};
+    struct is_continguous : std::false_type {};
 
-    template<class T, class = void>
-    struct size_getter {
-        static std::uint32_t get(T& value)
-        {
-            using std::begin;
-            using std::end;
-            const auto first = begin(value);
-            const auto last  = end(value);
-            return static_cast<std::uint32_t>(last - first);
-        }
-    };
+    template<class T, class CharTraits, class Alloc>
+    struct is_continguous<std::basic_string<T, CharTraits, Alloc>> : std::true_type {};
 
-    using std::size;
-    template<class T>
-    struct size_getter<T, std::void_t<decltype(size(std::declval<T&>()))>> {
-        static std::uint32_t get(T& value)
-        {
-            return static_cast<std::uint32_t>(size(value));
-        }
-    };
+    template<class T, class Alloc>
+    struct is_continguous<std::vector<T, Alloc>> : std::true_type {};
+    /// @}
 
 }} // namespace carbon::traits
+
+#undef CRBN_DETAIL_DETECT_T
 
 #endif // !CARBON_DETAIL_TRAITS_HPP
