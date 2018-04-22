@@ -1,5 +1,7 @@
 #ifndef CARBON_STREAM_ARCHIVE_HPP
 #define CARBON_STREAM_ARCHIVE_HPP
+
+#include "archive_base.hpp"
 #include <istream>
 #include <ostream>
 
@@ -7,7 +9,7 @@ namespace carbon {
 
     namespace input_archive {
 
-        class stream {
+        class stream : public archive_base<stream> {
             std::istream& _stream;
 
         public:
@@ -32,7 +34,7 @@ namespace carbon {
 
     namespace output_archive {
 
-        class stream {
+        class stream : public archive_base<stream> {
             std::ostream& _stream;
 
         public:
