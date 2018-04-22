@@ -17,7 +17,6 @@
 #pragma once
 #include "carbon/detail/generated_macros.hpp"
 #include "carbon/detail/util_macros.hpp"
-#include "carbon/detail/visit_members.hpp"
 
 // needed to fix msvc va args expansion
 #define CRBN_DETAIL_EXPAND(...) __VA_ARGS__
@@ -26,23 +25,5 @@
     CRBN_DETAIL_CAT(CRBN_DETAIL_SERIALIZABLE_, CRBN_DETAIL_NARGS(__VA_ARGS__))
 
 namespace carbon {
-
-    // TODO forceinline this
-    /// \brief Constructs and returns an oject of type T using its constructor that
-    /// accepts a carbon_type and the forwarded arguments
-    /// ## usage
-    /// ```cpp
-    /// // will call foo::foo(foo::carbon_type<const foo, decltype(my_archive)&>, float)
-    /// auto f = carbon::construct<foo>(my_archive, 5.0)
-    /// ```
-    // template<class T, class Archive, class... Args>
-    // inline T construct(Archive& archive, Args&&... args);
-
-    template<class T, class Archive>
-    inline void serialize(T& value, Archive& a)
-    {
-        constexpr auto tag = detail::serialization_tag<T>();
-        detail::copy_dispatch(value, a, tag);
-    }
 
 } // namespace carbon
