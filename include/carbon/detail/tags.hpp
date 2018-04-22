@@ -100,6 +100,9 @@ namespace carbon { namespace detail {
             return tag::none();
     }
 
+    template<class T>
+    using serialization_tag_t = std::decay_t<decltype(serialization_tag<T>())>;
+
 }} // namespace carbon::detail
 
 #endif // !CARBON_DETAIL_TAGS_HPP
