@@ -26,7 +26,12 @@ namespace carbon { namespace traits {
         : std::true_type {};
     /// @}
 
-    using std::size;
+    template<class T, class = void>
+    struct has_emplace_back : std::false_type {};
+    template<class T>
+    struct has_emplace_back<T, std::void_t<decltype(std::declval<T&>().emplace_back())>>
+        : std::true_type {};
+
     template<class T, class = void>
     struct size_getter {
         static std::uint32_t get(T& value)
@@ -39,6 +44,7 @@ namespace carbon { namespace traits {
         }
     };
 
+    using std::size;
     template<class T>
     struct size_getter<T, std::void_t<decltype(size(std::declval<T&>()))>> {
         static std::uint32_t get(T& value)
