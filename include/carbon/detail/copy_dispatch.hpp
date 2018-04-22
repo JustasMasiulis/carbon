@@ -34,8 +34,9 @@ namespace carbon { namespace detail {
         using type = std::remove_reference_t<decltype(*begin(value))>;
 
         constexpr auto type_tag = serialization_tag<type>();
-        if constexpr (std::is_same_v<decltype(type_tag), tag::trivially_copyable>)
-            a.copy(*begin(value), traits::size_getter<T>::get(value) * sizeof(T));
+        if constexpr (std::is_same_v<std::decay_t<decltype(type_tag)>,
+                                     tag::trivially_copyable>)
+            a.copy(*begin(value), sizeof(T));
         else {
             auto       first = begin(value);
             const auto last  = end(value);
@@ -47,21 +48,27 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::continguos_iterable)
     {
-        using std::begin;
-        using std::end;
-        using type = std::remove_reference_t<decltype(*begin(value))>;
-
-        constexpr auto type_tag = serialization_tag<type>();
-        if constexpr (std::is_same_v<decltype(type_tag), tag::trivially_copyable>) {
-            const auto size = traits::size_getter<T>::get(value);
+        std::uint32_t size;
+        if constexpr (Archive::is_input_archive) {
             a.copy(size);
-            a.copy(*begin(value), size * sizeof(T));
+            value.resize(size);
+        }
+
+        constexpr auto type_tag = serialization_tag<T::value_type>();
+        if constexpr (std::is_same_v<std::decay_t<decltype(type_tag)>,
+                                     tag::trivially_copyable>) {
+            if constexpr (!Archive::is_input_archive) {
+                size = static_cast<std::uint32_t>(value.size());
+                a.copy(size);
+            }
+            a.copy(value.front(), size * sizeof(T::value_type));
         }
         else {
-            auto       first = begin(value);
-            const auto last  = end(value);
-            auto       size  = static_cast<std::uint32_t>(last - first);
-            a.copy(size);
+            auto       first = value.begin();
+            const auto last  = value.end();
+            if constexpr (!Archive::is_input_archive)
+                a.copy(static_cast<std::uint32_t>(last - first));
+
             for (; first != last; ++first)
                 copy_dispatch(*first, a, type_tag);
         }
@@ -70,16 +77,28 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::iterable)
     {
-        using std::begin;
         using std::end;
+        constexpr auto tag = serialization_tag<T::value_type>();
+        if constexpr (Archive::is_input_archive) {
+            std::uint32_t size;
+            a.copy(size);
+            while (size--) {
+                if constexpr (traits::has_emplace_back<T>::value)
+                    copy_dispatch(value.emplace_back(), tag);
+                else // TODO save the iterator
+                    copy_dispatch(*value.emplace(end(value)), tag);
+            }
+        }
+        else {
+            using std::begin;
+            using std::size;
 
-        auto       first = begin(value);
-        const auto last  = end(value);
-        auto       size  = static_cast<std::uint32_t>(last - first);
-        a.copy(size);
-
-        for (; first != last; ++first)
-            visit_members(*first, a);
+            auto       first = begin(value);
+            const auto last  = end(value);
+            a.copy(static_cast<std::uint32_t>(size(value)));
+            for (; first != last; ++first)
+                copy_dispatch(*first, a, tag);
+        }
     }
 
     template<class T, class Archive>
