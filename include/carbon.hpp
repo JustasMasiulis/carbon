@@ -39,7 +39,7 @@ namespace carbon {
     // inline T construct(Archive& archive, Args&&... args);
 
     template<class T, class Archive>
-    void serialize(T& value, Archive& a)
+    inline void serialize(T& value, Archive& a)
     {
         constexpr auto tag = detail::serialization_tag<T>();
         detail::copy_dispatch(value, a, tag);
