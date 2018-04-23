@@ -7,36 +7,36 @@
 
 namespace carbon { namespace detail {
 
-    template<class T, class Archive, std::size_t N, std::size_t I = 0>
     struct members_visitor_t {
+        template<std::size_t I, class T, class Archive>
         static void visit(T& this_ref, Archive& archive)
         {
             constexpr auto mptr = std::get<I>(T::template carbon_type<T>::target_members);
-            visit_members(this_ref.*mptr);
-            members_visitor_t<T, Archive, N, I + 1>::visit(this_ref, archive);
+            copy_dispatch(this_ref.*mptr, archive);
         }
     };
 
-    template<class T, class Archive, std::size_t N>
-    struct members_visitor_t<T, Archive, N, N> {
-        constexpr static void visit(T&, Archive&) noexcept {}
-    };
-
-    template<class T, class Archive, std::size_t N, std::size_t I = 0>
     struct magic_members_visitor_t {
-        static void visit(T& this_ref, Archive& archive)
+        template<std::size_t I, class T, class Archive>
+        static void visit(T& value, Archive& archive)
         {
-            auto& member_ref = boost::pfr::detail::sequence_tuple::get<I>(
-                boost::pfr::detail::tie_as_tuple(this_ref));
-            using type = std::remove_reference_t<decltype(member_ref)>;
-            copy_dispatch(member_ref, archive, serialization_tag<type>());
-
-            magic_members_visitor_t<T, Archive, N, I + 1>::visit(this_ref, archive);
+            auto& mref = boost::pfr::detail::sequence_tuple::get<I>(
+                boost::pfr::detail::tie_as_tuple(value));
+            copy_dispatch(mref, archive);
         }
     };
 
-    template<class T, class Archive, std::size_t N>
-    struct magic_members_visitor_t<T, Archive, N, N> {
+    template<class T, class Archive, class Visitor, std::size_t N, std::size_t I = 0>
+    struct members_for_each {
+        static void visit(T& value, Archive& archive)
+        {
+            Visitor::template visit<I>(value, archive);
+            members_for_each<T, Archive, Visitor, N, I + 1>::visit(value, archive);
+        }
+    };
+
+    template<class T, class Archive, class Visitor, std::size_t N>
+    struct members_for_each<T, Archive, Visitor, N, N> {
         constexpr static void visit(T&, Archive&) noexcept {}
     };
 
