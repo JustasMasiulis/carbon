@@ -48,10 +48,13 @@
     <ClInclude Include="include\carbon\stream_archive.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\size_dispatch.hpp">
+    <ClInclude Include="include\carbon\memory_archive.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\memory_archive.hpp">
+    <ClInclude Include="include\carbon\unchecked_memory_archive.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\archive_base.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

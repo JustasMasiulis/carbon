@@ -126,7 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
-    <ClInclude Include="include\carbon\detail\size_dispatch.hpp" />
+    <ClInclude Include="include\carbon\archive_base.hpp" />
     <ClInclude Include="include\carbon\memory_archive.hpp" />
     <ClInclude Include="include\carbon\stream_archive.hpp" />
     <ClInclude Include="include\carbon\detail\fields_count.hpp" />
@@ -138,6 +138,7 @@
     <ClInclude Include="include\carbon\detail\copy_dispatch.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
     <ClInclude Include="include\carbon\detail\util_macros.hpp" />
+    <ClInclude Include="include\carbon\unchecked_memory_archive.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test\macro_generator.cpp" />

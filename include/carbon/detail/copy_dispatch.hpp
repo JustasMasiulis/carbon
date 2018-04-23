@@ -13,14 +13,14 @@ namespace carbon { namespace detail {
     {
         constexpr auto size =
             std::tuple_size<T::template carbon_type<T>::target_members>::value;
-        members_visitor_t<T, Archive, size>::visit(this_ref, archive);
+        members_for_each<T, Archive, members_visitor_t, size>::visit(value, a);
     }
 
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::none)
     {
         constexpr auto size = boost::pfr::detail::fields_count<T>();
-        magic_members_visitor_t<T, Archive, size>::visit(value, a);
+        members_for_each<T, Archive, magic_members_visitor_t, size>::visit(value, a);
     }
 
     template<class T, class Archive>
@@ -32,15 +32,13 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::array)
     {
-        using std::begin;
-        using std::end;
-        using type = std::remove_reference_t<decltype(*begin(value))>;
-
-        if constexpr (std::is_same_v<serialization_tag_t<type>, tag::trivially_copyable>)
-            a.copy(*begin(value), sizeof(T));
+        using value_type = std::remove_reference_t<decltype(value[0])>;
+        if constexpr (std::is_same_v<serialization_tag_t<value_type>,
+                                     tag::trivially_copyable>)
+            a.copy(*std::begin(value), sizeof(T));
         else {
-            auto       first = begin(value);
-            const auto last  = end(value);
+            auto       first = std::begin(value);
+            const auto last  = std::end(value);
             for (; first != last; ++first)
                 copy_dispatch(*first, a);
         }
@@ -49,6 +47,7 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::continguos_iterable)
     {
+        // continguos_iterable is only string and vector - no need for ADL stuff
         std::uint32_t size;
         if constexpr (Archive::is_input_archive) {
             a.copy(size);
@@ -77,10 +76,14 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::iterable)
     {
+        using std::begin;
         using std::end;
+        using std::size;
+
         if constexpr (Archive::is_input_archive) {
             std::uint32_t size;
             a.copy(size);
+
             while (size--) {
                 if constexpr (traits::has_emplace_back<T>::value)
                     copy_dispatch(value.emplace_back(), a);
@@ -89,9 +92,6 @@ namespace carbon { namespace detail {
             }
         }
         else {
-            using std::begin;
-            using std::size;
-
             auto       first = begin(value);
             const auto last  = end(value);
             a.copy(static_cast<std::uint32_t>(size(value)));

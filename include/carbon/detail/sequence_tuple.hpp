@@ -118,7 +118,6 @@ namespace boost { namespace pfr { namespace detail { namespace sequence_tuple {
     using tuple_element = std::remove_reference<decltype(
         ::boost::pfr::detail::sequence_tuple::get<I>(std::declval<T>()))>;
 
-
 }}}} // namespace boost::pfr::detail::sequence_tuple
 
 #endif // BOOST_PFR_CORE_HPP
