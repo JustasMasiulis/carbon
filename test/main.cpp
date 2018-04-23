@@ -1,10 +1,8 @@
-#include "../include/carbon.hpp"
-#include "../include/carbon/detail/visit_members.hpp"
-#include "../include/carbon/detail/generated_type_to_tuple.hpp"
-#include <iostream>
-#include <deque>
-#include <fstream>
 #include "../include/carbon/unchecked_memory_archive.hpp"
+#include "../include/carbon.hpp"
+#include <iostream>
+#include <fstream>
+#include <deque>
 
 struct bar {
     int                  i;
