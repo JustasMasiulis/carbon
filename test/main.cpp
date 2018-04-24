@@ -31,7 +31,7 @@ int main()
         in.close();
     }
 
-    f = foo{ { 2, 6.f }, { 'b', 'c', 'd' }, 2 };
+    f = foo{ { 2, 6.f }, { 'b', 'c', 'd' }, { 2.0 } };
     carbon::output_archive::unchecked_memory archive(buffer);
     archive(f);
 

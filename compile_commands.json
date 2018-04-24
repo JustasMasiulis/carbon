@@ -1,0 +1,7 @@
+[
+{
+  "directory": "c:/users/justa/repos/carbon/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\clang-cl.exe  /nologo -TP  -I..\\include  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   /DWIN32 /D_WINDOWS /W3 /GR /EHsc -Wno-c++17-extensions /Fotest\\CMakeFiles\\main_test.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB -c C:\\Users\\justa\\repos\\carbon\\test\\main.cpp",
+  "file": "C:/Users/justa/repos/carbon/test/main.cpp"
+}
+]
