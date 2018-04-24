@@ -13,7 +13,7 @@ struct bar {
 struct foo {
     bar               b;
     std::vector<char> s;
-    char              arr[12];
+    std::array<char, 12> arr;
     double            d;
 };
 
@@ -31,7 +31,7 @@ int main()
         in.close();
     }
 
-    f = foo{ { 2, 6.f, { 3, 4 } }, { 'b', 'c', 'd' }, 2 };
+    f = foo{ { 2, 6.f }, { 'b', 'c', 'd' }, 2 };
     carbon::output_archive::unchecked_memory archive(buffer);
     archive(f);
 
