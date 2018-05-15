@@ -19,7 +19,7 @@ namespace carbon { namespace detail {
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::none)
     {
-        constexpr auto size = boost::pfr::detail::fields_count<T>();
+        constexpr auto size = boost::pfr::fields_count<T>();
         members_for_each<T, Archive, magic_members_visitor_t, size>::visit(value, a);
     }
 
@@ -97,30 +97,20 @@ namespace carbon { namespace detail {
         }
     }
 
-    template<class Archive, class T, class... Args>
-    inline void copy_dispatch_variadic(Archive& a, T& value, Args&... args)
-    {
-        copy_dispatch(value, a);
-        copy_dispatch_variadic(a, args...);
-    }
-
-    template<class Archive, class T>
-    inline void copy_dispatch_variadic(Archive& a, T& value)
-    {
-        copy_dispatch(value, a);
-    }
-
-    template<class Archive, class Tup, std::size_t... Is>
-    inline void copy_dispatch_tuple(Tup& tuple, Archive& a, std::index_sequence<Is...>)
-    {
-        copy_dispatch_variadic(a, std::get<Is>(tuple)...);
-    }
+    template<class Archive>
+    struct variadic_copy_dispatcher {
+        Archive& archive;
+        template<class... Args>
+        inline void operator()(Args&... args)
+        {
+            (copy_dispatch(args, archive), ...);
+        }
+    };
 
     template<class T, class Archive>
     inline void copy_dispatch(T& value, Archive& a, tag::tuple)
     {
-        constexpr std::size_t size = std::tuple_size<T>::value;
-        copy_dispatch_tuple(value, a, std::make_index_sequence<size>());
+        std::apply(variadic_copy_dispatcher<Archive>{ a }, value);
     }
 
     template<class T, class Archive>

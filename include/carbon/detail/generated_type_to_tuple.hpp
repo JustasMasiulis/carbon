@@ -17,11 +17,11 @@
 #include "fields_count.hpp"
 #include "sequence_tuple.hpp"
 
-namespace boost { namespace pfr { namespace detail {
+namespace boost { namespace pfr {
 
 template <class... Args>
 constexpr auto make_tuple_of_references(Args&&... args) noexcept {
-  return sequence_tuple::tuple<Args&...>{ args... };
+  return tuple<Args&...>{ args... };
 }
 
 template <class T>
@@ -1018,17 +1018,17 @@ constexpr auto tie_as_tuple(T& val, size_t_<100>) noexcept {
   );
 }
 
+    // clang-format on
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <class T>
-constexpr auto tie_as_tuple(T& val) noexcept {
-  typedef size_t_<fields_count<T>()> fields_count_tag;
-  return boost::pfr::detail::tie_as_tuple(val, fields_count_tag{});
-}
+    template<class T>
+    constexpr auto tie_as_tuple(T& val) noexcept
+    {
+        typedef size_t_<fields_count<T>()> fields_count_tag;
+        return boost::pfr::tie_as_tuple(val, fields_count_tag{});
+    }
 
-}}} // namespace boost::pfr::detail
+}} // namespace boost::pfr
 
 #endif // BOOST_PFR_DETAIL_CORE17_GENERATED_HPP
-
-// clang-format on

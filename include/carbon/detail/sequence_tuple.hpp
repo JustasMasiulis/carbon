@@ -11,7 +11,7 @@
 #include <cstddef> // std::size_t
 
 ///////////////////// Tuple that holds it's values in the supplied order
-namespace boost { namespace pfr { namespace detail { namespace sequence_tuple {
+namespace boost { namespace pfr {
 
     template<std::size_t N, class T>
     struct base_from_member {
@@ -53,29 +53,15 @@ namespace boost { namespace pfr { namespace detail { namespace sequence_tuple {
     }
 
     template<std::size_t N, class T>
-    constexpr volatile T& get_impl(volatile base_from_member<N, T>& t) noexcept
-    {
-        return t.value;
-    }
-
-    template<std::size_t N, class T>
-    constexpr const volatile T&
-    get_impl(const volatile base_from_member<N, T>& t) noexcept
-    {
-        return t.value;
-    }
-
-    template<std::size_t N, class T>
     constexpr T&& get_impl(base_from_member<N, T>&& t) noexcept
     {
         return std::forward<T>(t.value);
     }
 
 
-    template<class... Values>
-    struct tuple : tuple_base<std::make_index_sequence<sizeof...(Values)>, Values...> {
-        using tuple_base<std::make_index_sequence<sizeof...(Values)>,
-                         Values...>::tuple_base;
+    template<class... Ts>
+    struct tuple : tuple_base<std::make_index_sequence<sizeof...(Ts)>, Ts...> {
+        using tuple_base<std::make_index_sequence<sizeof...(Ts)>, Ts...>::tuple_base;
     };
 
 
@@ -94,20 +80,6 @@ namespace boost { namespace pfr { namespace detail { namespace sequence_tuple {
     }
 
     template<std::size_t N, class... T>
-    constexpr decltype(auto) get(const volatile tuple<T...>& t) noexcept
-    {
-        static_assert(N < tuple<T...>::size_v, "Tuple index out of bounds");
-        return get_impl<N>(t);
-    }
-
-    template<std::size_t N, class... T>
-    constexpr decltype(auto) get(volatile tuple<T...>& t) noexcept
-    {
-        static_assert(N < tuple<T...>::size_v, "Tuple index out of bounds");
-        return get_impl<N>(t);
-    }
-
-    template<std::size_t N, class... T>
     constexpr decltype(auto) get(tuple<T...>&& t) noexcept
     {
         static_assert(N < tuple<T...>::size_v, "Tuple index out of bounds");
@@ -115,9 +87,9 @@ namespace boost { namespace pfr { namespace detail { namespace sequence_tuple {
     }
 
     template<std::size_t I, class T>
-    using tuple_element = std::remove_reference<decltype(
-        ::boost::pfr::detail::sequence_tuple::get<I>(std::declval<T>()))>;
+    using tuple_element =
+        std::remove_reference<decltype(::boost::pfr::get<I>(std::declval<T>()))>;
 
-}}}} // namespace boost::pfr::detail::sequence_tuple
+}} // namespace boost::pfr
 
 #endif // BOOST_PFR_CORE_HPP

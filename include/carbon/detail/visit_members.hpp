@@ -20,8 +20,7 @@ namespace carbon { namespace detail {
         template<std::size_t I, class T, class Archive>
         static void visit(T& value, Archive& archive)
         {
-            auto& mref = boost::pfr::detail::sequence_tuple::get<I>(
-                boost::pfr::detail::tie_as_tuple(value));
+            auto& mref = boost::pfr::get<I>(boost::pfr::tie_as_tuple(value));
             copy_dispatch(mref, archive);
         }
     };

@@ -13,7 +13,6 @@ struct bar {
 struct foo {
     bar               b;
     std::vector<char> s;
-    std::array<char, 12> arr;
     double            d;
 };
 
@@ -22,7 +21,7 @@ int main()
     char          buffer[0x1000];
     foo           f;
     std::ifstream in("test.txt", std::ios::binary);
-    if (in.is_open()) {
+    if(in.is_open()) {
         std::copy(std::istream_iterator<char>(in), {}, buffer);
         carbon::input_archive::unchecked_memory archive(buffer);
         archive(f);
