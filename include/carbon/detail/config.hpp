@@ -1,0 +1,14 @@
+#ifndef CARBON_DETAIL_CONFIG_HPP
+#define CARBON_DETAIL_CONFIG_HPP
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+#define CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(x) x&
+#else
+#define CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(x) x
+#endif
+
+#ifndef CARBON_IO_MEMORY_OUT_OF_RANGE
+#define CARBON_IO_MEMORY_OUT_OF_RANGE(str) throw std::out_of_range(str)
+#endif
+
+#endif

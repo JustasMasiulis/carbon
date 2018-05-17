@@ -1,55 +1,79 @@
 #ifndef CARBON_IO_STREAM_HPP
 #define CARBON_IO_STREAM_HPP
 
+#include "../detail/config.hpp"
+
+#include <memory>
 #include <istream>
 #include <ostream>
-
-// TODO std::addressof and helper function
 
 namespace carbon::io {
 
     class stream_input {
         std::istream& _stream;
 
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t _bytes_copied = 0;
+#endif
+
     public:
         constexpr static bool is_input_archive = true;
-        using io_reference                     = stream_input;
+        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(stream_input);
 
         stream_input(std::istream& is) noexcept : _stream(is) {}
 
         template<class T>
         void copy(T& value)
         {
-            _stream.read(reinterpret_cast<char*>(&value), sizeof(value));
+            copy(value, sizeof(value));
         }
 
         template<class T>
         void copy(T& value, std::size_t size)
         {
-            _stream.read(reinterpret_cast<char*>(&value), size);
+            _stream.read(reinterpret_cast<char*>(::std::addressof(value)), size);
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+            _bytes_copied += size;
+#endif
         }
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t copied() const noexcept { return _bytes_copied; }
+#endif
     };
 
     class stream_output {
         std::ostream& _stream;
 
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t _bytes_copied = 0;
+#endif
+
     public:
         constexpr static bool is_input_archive = false;
-        using io_reference                     = stream_output;
+        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(stream_output);
 
         stream_output(std::ostream& os) noexcept : _stream(os) {}
 
         template<class T>
         void copy(const T& value)
         {
-            _stream.write(reinterpret_cast<const char*>(&value), sizeof(value));
+            copy(value, sizeof(value));
         }
 
         template<class T>
         void copy(const T& value, std::size_t size)
         {
-            _stream.write(reinterpret_cast<const char*>(&value), size);
+            _stream.write(reinterpret_cast<const char*>(::std::addressof(value)), size);
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+            _bytes_copied += size;
+#endif
         }
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t copied() const noexcept { return _bytes_copied; }
+#endif
     };
 
     struct stream {

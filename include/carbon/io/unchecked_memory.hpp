@@ -1,6 +1,8 @@
 #ifndef CARBON_IO_UNCHECKED_MEMORY_HPP
 #define CARBON_IO_UNCHECKED_MEMORY_HPP
 
+#include "../detail/config.hpp"
+
 #include <memory> // addressof
 #include <cstring> // memcpy
 
@@ -8,11 +10,14 @@ namespace carbon::io {
 
     class unchecked_memory_input {
         const char* _buffer;
-        std::size_t _copied = 0;
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t _bytes_copied = 0;
+#endif
 
     public:
         constexpr static bool is_input_archive = true;
-        using io_reference                     = unchecked_memory_input&;
+        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(unchecked_memory_input);
 
         constexpr unchecked_memory_input(const void* buffer) noexcept
             : _buffer(static_cast<const char*>(buffer))
@@ -29,16 +34,23 @@ namespace carbon::io {
         {
             std::memcpy(::std::addressof(value), _buffer, size);
             _buffer += size;
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
             _copied += size;
+#endif
         }
 
-        std::size_t copied() const noexcept { return _copied; }
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t copied() const noexcept { return _bytes_copied; }
+#endif
     };
 
 
     class unchecked_memory_output {
-        char*       _buffer;
-        std::size_t _copied = 0;
+        char* _buffer;
+
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t _bytes_copied = 0;
+#endif
 
     public:
         constexpr static bool is_input_archive = false;
@@ -51,9 +63,7 @@ namespace carbon::io {
         template<class T>
         void copy(const T& value) noexcept
         {
-            std::memcpy(_buffer, ::std::addressof(value), sizeof(T));
-            _buffer += sizeof(T);
-            _copied += sizeof(T);
+            copy(value, sizeof(T));
         }
 
         template<class T>
@@ -61,10 +71,14 @@ namespace carbon::io {
         {
             std::memcpy(_buffer, ::std::addressof(value), size);
             _buffer += size;
-            _copied += size;
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+            _bytes_copied += size;
+#endif
         }
 
-        std::size_t copied() const noexcept { return _copied; }
+#ifdef CARBON_IO_TRACK_BYTES_COPIED
+        std::size_t copied() const noexcept { return _bytes_copied; }
+#endif
     };
 
     struct unchecked_memory {
