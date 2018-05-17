@@ -26,4 +26,45 @@
 
 namespace carbon {
 
+    template<template<class> class Format, class Io>
+    struct serializer_t {
+        using input_io_type     = typename Io::input;
+        using input_format_type = Format<input_io_type>;
+
+        using output_io_type      = typename Io::output;
+        using output_format_type = Format<output_io_type>;
+    };
+
+    template<class Serializer, class T, class... Init>
+    void load(T&& value, Init&&... init)
+    {
+        typename Serializer::input_io_type io(std::forward<Init>(init)...);
+        typename Serializer::input_format_type format(std::move(io));
+        format(value);
+	}
+
+	template<class Serializer, class T, class... Init>
+    void save(T&& value, Init&&... init)
+    {
+        typename Serializer::output_io_type     io(std::forward<Init>(init)...);
+        typename Serializer::output_format_type format(std::move(io));
+        format(value);
+    }
+
+    template<template<class> class Format, class Io, class T, class... Init>
+    void load(T&& value, Init&&... init)
+    {
+        typename Io::input io(std::forward<Init>(init)...);
+        Format             format(std::move(io));
+        format(value);
+    }
+
+    template<template<class> class Format, class Io, class T, class... Init>
+    void save(T&& value, Init&&... init)
+    {
+        typename Io::output io(std::forward<Init>(init)...);
+        Format              format(std::move(io));
+        format(value);
+    }
+
 } // namespace carbon

@@ -45,16 +45,22 @@
     <ClInclude Include="include\carbon\detail\copy_dispatch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\stream_archive.hpp">
+    <ClInclude Include="include\carbon\io\stream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\memory_archive.hpp">
+    <ClInclude Include="include\carbon\io\memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\unchecked_memory_archive.hpp">
+    <ClInclude Include="include\carbon\io\unchecked_memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\archive_base.hpp">
+    <ClInclude Include="include\carbon\format\binary.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\detail\config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\io\io_tag.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
