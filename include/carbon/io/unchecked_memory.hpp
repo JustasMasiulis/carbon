@@ -1,6 +1,7 @@
 #ifndef CARBON_IO_UNCHECKED_MEMORY_HPP
 #define CARBON_IO_UNCHECKED_MEMORY_HPP
 
+#include "io_tag.hpp"
 #include "../detail/config.hpp"
 
 #include <memory> // addressof
@@ -16,7 +17,7 @@ namespace carbon::io {
 #endif
 
     public:
-        constexpr static bool is_input_archive = true;
+        using io_tag       = input_io_tag;
         using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(unchecked_memory_input);
 
         constexpr unchecked_memory_input(const void* buffer) noexcept
@@ -53,8 +54,8 @@ namespace carbon::io {
 #endif
 
     public:
-        constexpr static bool is_input_archive = false;
-        using io_reference                     = unchecked_memory_output&;
+        using io_tag       = input_io_tag;
+        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(unchecked_memory_output);
 
         constexpr unchecked_memory_output(void* buffer) noexcept
             : _buffer(static_cast<char*>(buffer))
