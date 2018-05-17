@@ -20,7 +20,7 @@
 #pragma clang diagnostic ignored "-Wmissing-field-initializers"
 #endif
 
-namespace boost { namespace pfr {
+namespace carbon::detail::pfr {
 
     ///////////////////// General utility stuff
     template<std::size_t I>
@@ -212,7 +212,7 @@ namespace boost { namespace pfr {
         return result;
     }
 
-}} // namespace boost::pfr
+} // namespace carbon::detail::pfr
 
 #ifdef __clang__
 #pragma clang diagnostic pop

@@ -11,7 +11,7 @@
 #include <cstddef> // std::size_t
 
 ///////////////////// Tuple that holds it's values in the supplied order
-namespace boost { namespace pfr {
+namespace carbon::detail::pfr {
 
     template<std::size_t N, class T>
     struct base_from_member {
@@ -90,6 +90,13 @@ namespace boost { namespace pfr {
     using tuple_element =
         std::remove_reference<decltype(::boost::pfr::get<I>(std::declval<T>()))>;
 
-}} // namespace boost::pfr
+    // only for member pointers
+    template<class... Args>
+    constexpr inline auto make_tuple(Args... args)
+    {
+        return tuple<Args...>(args...);
+    }
+
+} // namespace carbon::detail::pfr
 
 #endif // BOOST_PFR_CORE_HPP

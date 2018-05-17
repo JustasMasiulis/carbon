@@ -17,7 +17,7 @@
 #include "fields_count.hpp"
 #include "sequence_tuple.hpp"
 
-namespace boost { namespace pfr {
+namespace carbon::detail::pfr {
 
 template <class... Args>
 constexpr auto make_tuple_of_references(Args&&... args) noexcept {
@@ -26,7 +26,7 @@ constexpr auto make_tuple_of_references(Args&&... args) noexcept {
 
 template <class T>
 constexpr auto tie_as_tuple(T& /*val*/, size_t_<0>) noexcept {
-  return sequence_tuple::tuple<>{};
+  return tuple<>{};
 }
 
 template <class T>
@@ -1025,10 +1025,10 @@ constexpr auto tie_as_tuple(T& val, size_t_<100>) noexcept {
     template<class T>
     constexpr auto tie_as_tuple(T& val) noexcept
     {
-        typedef size_t_<fields_count<T>()> fields_count_tag;
-        return boost::pfr::tie_as_tuple(val, fields_count_tag{});
+        using fields_count_tag = size_t_<fields_count<T>()>;
+        return pfr::tie_as_tuple(val, fields_count_tag{});
     }
 
-}} // namespace boost::pfr
+} // namespace carbon::detail::pfr
 
 #endif // BOOST_PFR_DETAIL_CORE17_GENERATED_HPP
