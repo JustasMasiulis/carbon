@@ -20,7 +20,6 @@ namespace carbon::io {
 
     public:
         using io_tag       = input_io_tag;
-        using io_reference = memory_input&;
 
         constexpr memory_input(const void* buffer, std::size_t size) noexcept
             : _buffer(static_cast<const char*>(buffer))
@@ -71,7 +70,6 @@ namespace carbon::io {
 
     public:
         using io_tag       = output_io_tag;
-        using io_reference = memory_output&;
 
         constexpr memory_output(void* buffer, std::size_t size) noexcept
             : _buffer(static_cast<char*>(buffer))

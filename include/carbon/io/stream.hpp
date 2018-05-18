@@ -19,7 +19,6 @@ namespace carbon::io {
 
     public:
         using io_tag       = input_io_tag;
-        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(stream_input);
 
         stream_input(std::istream& is) noexcept : _stream(is) {}
 
@@ -52,7 +51,6 @@ namespace carbon::io {
 
     public:
         using io_tag       = output_io_tag;
-        using io_reference = CARBON_IO_REF_IF_BYTE_COUNT_TRACKED(stream_output);
 
         stream_output(std::ostream& os) noexcept : _stream(os) {}
 
