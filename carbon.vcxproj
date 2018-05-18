@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="include\carbon.hpp" />
     <ClInclude Include="include\carbon\detail\config.hpp" />
+    <ClInclude Include="include\carbon\detail\save_size.hpp" />
     <ClInclude Include="include\carbon\format\binary.hpp" />
     <ClInclude Include="include\carbon\io\io_tag.hpp" />
     <ClInclude Include="include\carbon\io\memory.hpp" />
