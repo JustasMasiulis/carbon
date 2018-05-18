@@ -18,7 +18,7 @@ namespace carbon::io {
 #endif
 
     public:
-        using io_tag       = input_io_tag;
+        using io_tag = input_io_tag;
 
         stream_input(std::istream& is) noexcept : _stream(is) {}
 
@@ -50,7 +50,7 @@ namespace carbon::io {
 #endif
 
     public:
-        using io_tag       = output_io_tag;
+        using io_tag = output_io_tag;
 
         stream_output(std::ostream& os) noexcept : _stream(os) {}
 

@@ -3,7 +3,6 @@
 
 #include "tags.hpp"
 #include "generated_type_to_tuple.hpp"
-#include "copy_dispatch.hpp"
 
 namespace carbon::detail {
 

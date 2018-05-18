@@ -1,7 +1,7 @@
 #ifndef CARBON_FORMAT_BINARY_HPP
 #define CARBON_FORMAT_BINARY_HPP
 
-#include "../detail/copy_dispatch.hpp"
+#include "../detail/visit_members.hpp"
 #include "../detail/save_size.hpp"
 #include "../io/io_tag.hpp"
 
@@ -52,8 +52,7 @@ namespace carbon::format {
             constexpr auto size = detail::pfr::fields_count<T>();
             detail::members_for_each<value_ref<T>&,
                                      detail::magic_members_visitor_t,
-                                     size>::visit(
-                value, *this);
+                                     size>::visit(value, *this);
         }
 
         template<class T>

@@ -17,7 +17,7 @@ namespace carbon::io {
 #endif
 
     public:
-        using io_tag       = input_io_tag;
+        using io_tag = input_io_tag;
 
         constexpr unchecked_memory_input(const void* buffer) noexcept
             : _buffer(static_cast<const char*>(buffer))
@@ -53,7 +53,7 @@ namespace carbon::io {
 #endif
 
     public:
-        using io_tag       = output_io_tag;
+        using io_tag = output_io_tag;
 
         constexpr unchecked_memory_output(void* buffer) noexcept
             : _buffer(static_cast<char*>(buffer))
