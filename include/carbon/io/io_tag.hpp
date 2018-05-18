@@ -13,6 +13,10 @@ namespace carbon::io {
 
     namespace detail {
 
+		template<class Io>
+        inline constexpr bool is_input_io_v =
+            std::is_same_v<typename Io::io_tag, input_io_tag>;
+
         template<class Tag, class T>
         struct io_value_reference;
 
