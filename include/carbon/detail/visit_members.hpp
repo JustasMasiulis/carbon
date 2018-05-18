@@ -5,7 +5,7 @@
 #include "generated_type_to_tuple.hpp"
 #include "copy_dispatch.hpp"
 
-namespace carbon { namespace detail {
+namespace carbon::detail {
 
     struct members_visitor_t {
         template<std::size_t I, class T, class Callback>
@@ -27,8 +27,8 @@ namespace carbon { namespace detail {
 
     template<class T, class Visitor, std::size_t N, std::size_t I = 0>
     struct members_for_each {
-		template<class Callback>
-        static void visit(T& value, Callback& callback)
+        template<class Callback>
+        static void visit(T&& value, Callback& callback)
         {
             Visitor::template visit<I>(value, callback);
             members_for_each<T, Visitor, N, I + 1>::visit(value, callback);
@@ -37,10 +37,10 @@ namespace carbon { namespace detail {
 
     template<class T, class Visitor, std::size_t N>
     struct members_for_each<T, Visitor, N, N> {
-		template<class Callback>
+        template<class Callback>
         constexpr static void visit(T&, Callback&) noexcept {}
     };
 
-}} // namespace carbon::detail
+} // namespace carbon::detail
 
 #endif // !CARBON_VISIT_MEMBERS_HPP
