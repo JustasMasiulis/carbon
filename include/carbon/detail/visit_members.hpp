@@ -6,12 +6,30 @@
 
 namespace carbon::detail {
 
+    template<class T>
+    inline constexpr std::size_t num_members(tag::specialized) noexcept
+    {
+        using ctype = typename T::template carbon_type<T>;
+        return ctype{}.members.size_v;
+    }
+
+    template<class T>
+    inline constexpr std::size_t num_members(tag::none) noexcept
+    {
+        return detail::pfr::fields_count<T>();
+    }
+
     struct members_visitor_t {
         template<std::size_t I, class T, class Callback>
         static void visit(T& this_ref, Callback& callback)
         {
-            constexpr auto mptr = std::get<I>(T::template carbon_type<T>::target_members);
-            callback(this_ref.*mptr);
+            using ctype           = typename T::template carbon_type<T>;
+            constexpr auto member = pfr::get<I>(ctype::members);
+            if constexpr(ctype::named) {
+                callback(this_ref.*member.ptr, member.name);
+            }
+            else
+                callback(this_ref.*member);
         }
     };
 
@@ -24,10 +42,13 @@ namespace carbon::detail {
         }
     };
 
-    template<class T, class Visitor, std::size_t N, std::size_t I = 0>
+    template<class T,
+             class Visitor,
+             std::size_t N = num_members<std::decay_t<T>>(serialization_tag<T>()),
+             std::size_t I = 0>
     struct members_for_each {
         template<class Callback>
-        static void visit(T&& value, Callback& callback)
+        static void visit(T& value, Callback& callback)
         {
             Visitor::template visit<I>(value, callback);
             members_for_each<T, Visitor, N, I + 1>::visit(value, callback);

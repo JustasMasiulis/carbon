@@ -22,6 +22,12 @@ namespace carbon::format {
             (copy_dispatch<std::remove_reference_t<Args>>(args), ...);
         }
 
+        template<class U>
+        inline void operator()(U&& value, const char*)
+        {
+            copy_dispatch<std::remove_reference_t<U>>(value);
+        }
+
         io_type&       io() noexcept { return _io; }
         const io_type& io() const noexcept { return _io; }
 
@@ -41,18 +47,16 @@ namespace carbon::format {
         template<class T>
         inline void copy_dispatch(value_ref<T>& value, detail::tag::specialized)
         {
-            constexpr auto size =
-                std::tuple_size<T::template carbon_type<T>::target_members>::value;
-            members_for_each<T, detail::members_visitor_t, size>::visit(value, *this);
+            detail::members_for_each<value_ref<T>&, detail::members_visitor_t>::visit(
+                value, *this);
         }
 
         template<class T>
         inline void copy_dispatch(value_ref<T>& value, detail::tag::none)
         {
-            constexpr auto size = detail::pfr::fields_count<T>();
             detail::members_for_each<value_ref<T>&,
-                                     detail::magic_members_visitor_t,
-                                     size>::visit(value, *this);
+                                     detail::magic_members_visitor_t>::visit(value,
+                                                                             *this);
         }
 
         template<class T>
@@ -69,7 +73,7 @@ namespace carbon::format {
                                         detail::tag::trivially_copyable>)
                 _io.copy(*std::begin(value), sizeof(T));
             else
-                std::for_each(std::begin(value), std::end(value), copy_dispatch);
+                std::for_each(std::begin(value), std::end(value), std::ref(*this));
         }
 
         template<class T>
@@ -92,7 +96,7 @@ namespace carbon::format {
                              detail::tag::trivially_copyable>)
                 _io.copy(value.front(), size * sizeof(typename T::value_type));
             else
-                std::for_each(value.begin(), value.end(), copy_dispatch);
+                std::for_each(value.begin(), value.end(), std::ref(*this));
         }
 
         template<class T>
@@ -114,7 +118,7 @@ namespace carbon::format {
             }
             else {
                 detail::save_size(value, _io);
-                std::for_each(begin(value), end(value), copy_dispatch);
+                std::for_each(begin(value), end(value), std::ref(*this));
             }
         }
 

@@ -24,10 +24,10 @@ namespace carbon { namespace detail {
     {
         if constexpr (traits::has_carbon_type<T>::value)
             return tag::specialized();
-        if constexpr (traits::is_iterable<T>::value) {
+        else if constexpr (traits::is_iterable<T>::value) {
             if constexpr (traits::is_array<T>::value)
                 return tag::array();
-            if constexpr (traits::is_continguous<T>::value)
+            else if constexpr (traits::is_continguous<T>::value)
                 return tag::continguos_iterable();
             else
                 return tag::iterable();
