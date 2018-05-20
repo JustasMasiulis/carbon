@@ -129,6 +129,8 @@
     <ClInclude Include="include\carbon\detail\config.hpp" />
     <ClInclude Include="include\carbon\detail\save_size.hpp" />
     <ClInclude Include="include\carbon\format\binary.hpp" />
+    <ClInclude Include="include\carbon\format\detail\json_impl.hpp" />
+    <ClInclude Include="include\carbon\format\json.hpp" />
     <ClInclude Include="include\carbon\io\io_tag.hpp" />
     <ClInclude Include="include\carbon\io\memory.hpp" />
     <ClInclude Include="include\carbon\io\stream.hpp" />
@@ -138,7 +140,6 @@
     <ClInclude Include="include\carbon\detail\tags.hpp" />
     <ClInclude Include="include\carbon\detail\visit_members.hpp" />
     <ClInclude Include="include\carbon\detail\traits.hpp" />
-    <ClInclude Include="include\carbon\detail\copy_dispatch.hpp" />
     <ClInclude Include="include\carbon\detail\generated_macros.hpp" />
     <ClInclude Include="include\carbon\detail\util_macros.hpp" />
     <ClInclude Include="include\carbon\io\unchecked_memory.hpp" />

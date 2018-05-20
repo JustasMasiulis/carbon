@@ -67,8 +67,8 @@ namespace carbon {
     template<template<class> class Format, class Io, class T, class... Init>
     Format<typename Io::output> save(T&& value, Init&&... init)
     {
-        typename Io::output io(std::forward<Init>(init)...);
-        Format              format(std::move(io));
+        typename Io::output         io(std::forward<Init>(init)...);
+        Format<typename Io::output> format(std::move(io));
         format(value);
         return format;
     }

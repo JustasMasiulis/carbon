@@ -40,6 +40,22 @@ namespace carbon { namespace detail {
             return tag::none();
     }
 
+	/// \brief returns the serialization tag for type T
+    template<class T>
+    inline constexpr auto simplified_serialization_tag() noexcept
+    {
+        if constexpr(traits::has_carbon_type<T>::value)
+            return tag::specialized();
+        else if constexpr(traits::is_iterable<T>::value)
+                return tag::iterable();
+        else if constexpr(std::is_trivially_copyable_v<T>)
+            return tag::trivially_copyable();
+        else if constexpr(traits::is_tuple_like<T>::value)
+            return tag::tuple();
+        else
+            return tag::none();
+    }
+
     /// \brief the serialization tag type of T
     template<class T>
     using serialization_tag_t = std::decay_t<decltype(serialization_tag<T>())>;

@@ -23,7 +23,7 @@ namespace carbon::format {
         }
 
         template<class U>
-        inline void operator()(U&& value, const char*)
+        inline void operator()(U&& value, std::string_view)
         {
             copy_dispatch<std::remove_reference_t<U>>(value);
         }

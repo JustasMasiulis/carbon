@@ -7,6 +7,13 @@
 #include <deque>
 #include <vector>
 #include <istream>
+#include "../include/carbon/format/json.hpp"
+template<auto Ptr, std::size_t N>
+struct nv {
+    const char*           name;
+    constexpr static auto len = N;
+    constexpr static auto ptr = Ptr;
+};
 
 struct bar {
     int                  i;
@@ -18,6 +25,17 @@ struct foo {
     bar               b;
     std::vector<char> s;
     double            d;
+
+    template<class T>
+    struct carbon_type {
+        //constexpr static auto members = carbon::detail::pfr::make_tuple(nv<&T::b, 2>{ "b" },
+        //                                                                nv<&T::s, 2>{ "S" },
+        //                                                                nv<&T::d, 2>{ "d" });
+        constexpr static auto members =
+            carbon::detail::pfr::make_tuple(&T::b, &T::s, &T::d);
+		
+        constexpr static bool named   = false;
+    };
 };
 
 int main()
@@ -36,9 +54,10 @@ int main()
         in.close();
     }
 
+	std::ofstream out("test.json");
     f           = foo{ { 2, 6.f }, { 'b', 'c', 'd' }, { 2.0 } };
-    auto format = carbon::save<serializer>(f, buffer);
+    carbon::save<carbon::format::json, carbon::io::stream>(f, out);
 
-    std::ofstream out("test.txt", std::ios::binary);
-    std::copy(buffer, buffer + format.io().copied(), std::ostream_iterator<char>(out));
+    //std::ofstream out("test.json", std::ios::binary);
+    //std::copy(buffer, buffer + format.io().copied(), std::ostream_iterator<char>(out));
 }

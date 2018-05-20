@@ -26,7 +26,7 @@ namespace carbon::detail {
             using ctype           = typename T::template carbon_type<T>;
             constexpr auto member = pfr::get<I>(ctype::members);
             if constexpr(ctype::named) {
-                callback(this_ref.*member.ptr, member.name);
+                callback(this_ref.*member.ptr, std::string_view(member.name, member.len - 1));
             }
             else
                 callback(this_ref.*member);

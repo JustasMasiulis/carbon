@@ -14,9 +14,12 @@
 //// * limitations under the License.
 //// */
 //
-//#if CARBON_GENERATE_MACROS || 1
 //#include <fstream>
 //#include <string>
+//
+//constexpr int num_macros = 32;
+//char valid_chars[]   = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPADFGHJKLZXCVBNM_";
+//static_assert(sizeof(valid_chars) - 1 >= num_macros);
 //
 // std::string param(int i) { return "_" + std::to_string(i); }
 // std::string expanded_param(int i) { return "#" + param(i); }
@@ -24,11 +27,12 @@
 //{
 //    std::string s;
 //    for (int i = 0; i < n; ++i)
-//        s += (prefix + "_" + std::to_string(i) + ',');
+//        s += (prefix + valid_chars[i] + ',');
 //    if (!s.empty())
 //        s.pop_back();
 //    return s;
 //}
+//
 //
 // int main()
 //{
@@ -40,31 +44,22 @@
 //    // generate [1, 32] serialization macros
 //    for (int i = 1; i < 33; ++i) {
 //        // macro definition
-//        out << "#define CRBN_DETAIL_SERIALIZABLE_" << i << "(C";
+//        out << "#define CARBON_DETAIL_CARBONIZE" << i << "(";
 //
-//        for (int j = 0; j < i; ++j)
-//            out << ",_" << j;
-//        out << ")";
+//		// macro params
+//        for(int j = 0; j < i; ++j)
+//            out << valid_chars[j] << ',';
+//
+//		// get rid of last ,
+//		out.seekp(-1);
+//        out << ")\\\n";
 //
 //        // macro body
-//        out << "template<class _xCT, class _xCA> "
-//            << "struct carbon_type {\\\n";
-//        // archive ref
-//        out << "\t_xCA& _archive_;\\\n";
-//        // constructor
-//        out << "\tcarbon_type(_xCA& a) : _archive_(a) {}\\\n";
+//        out << "template<class T> struct CARBON_TYPE_NAME { \\\n";
 //
 //        // member pointers tuple
-//        out << "\tconstexpr static auto member_pointers{std::make_tuple("
-//            << expand_args(i, "&_xCT::") << ")};\\\n";
-//
-//
-//        for (int j = 0; j < i; ++j) {
-//            // functions to get the separate members
-//            out << "\tdecltype(auto) " << param(j) << "()";
-//            out << "{";
-//            out << "return _this_->_xCT::" << param(j) << ";}\\\n";
-//        }
+//        out << "\tconstexpr static auto member_pointers{::carbon::detail::pfr::make_tuple("
+//            << expand_args(i, "&T::") << ")};\\\n";
 //
 //        out << "};\n";
 //    }
@@ -86,5 +81,3 @@
 //        out << ">;\n";
 //    }
 //}
-//
-//#endif

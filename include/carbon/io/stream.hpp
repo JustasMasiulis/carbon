@@ -53,6 +53,10 @@ namespace carbon::io {
         using io_tag = output_io_tag;
 
         stream_output(std::ostream& os) noexcept : _stream(os) {}
+        stream_output(const stream_output&) = default;
+        stream_output(stream_output&&)      = default;
+
+        std::ostream& stream() noexcept { return _stream; }
 
         template<class T>
         void copy(const T& value)

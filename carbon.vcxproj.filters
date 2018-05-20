@@ -42,9 +42,6 @@
     <ClInclude Include="include\carbon\detail\sequence_tuple.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\carbon\detail\copy_dispatch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\carbon\io\stream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -64,6 +61,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\carbon\detail\save_size.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\format\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\carbon\format\detail\json_impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

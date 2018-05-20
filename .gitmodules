@@ -1,0 +1,3 @@
+[submodule "include/carbon/deps/rapidjson"]
+	path = include/carbon/deps/rapidjson
+	url = https://github.com/Tencent/rapidjson
